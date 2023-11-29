@@ -25,31 +25,58 @@ public class StockServices {
 
     private final  String SERVICE = "STOCK";
 
+    private final  String SUCESS_MSG = "SUCESS";
+
+    private final  String FAIL_MSG = "FAIL";
+
     private Communicator mediator = new Communicator();
 
 
-    public void getAllStock(){
+    public void getAllStock() throws HttpClientErrorException{
         RestTemplate restTemplate = new RestTemplate();
+        LocalDateTime dateTime = LocalDateTime.now();
         String url = String.format("%s/stock", apiUrl);
         logger.info("Chamando o método getAllStock() e efetuando a leitura do estoque");
-        StockDto[] stock = restTemplate.getForObject(url, StockDto[].class);
-        logger.info("O retorno do estoque é %s", stock.length);
-        for (int i = 0; i < stock.length; i++) {
-           logger.info(String.valueOf(stock[i]));
+        try{
+            StockDto[] stock = restTemplate.getForObject(url, StockDto[].class);
+            logger.info("O retorno do estoque é %s", stock.length);
+            for (int i = 0; i < stock.length; i++) {
+                logger.info(String.valueOf(stock[i]));
+            }
+            mediator.getNext(SUCESS_MSG,SERVICE,dateTime );
         }
+        catch (final  HttpClientErrorException e){
 
+            if(HttpStatus.NOT_FOUND.equals(e.getStatusCode())){
+                logger.info(e.getMessage() + "   caiu aquiiii");
+                mediator.getNext(FAIL_MSG,SERVICE,dateTime );
+            }
+            else{
+                logger.info(e.getMessage());
 
+            }
+        }
     }
 
-    public  void getAProduct(){
+    public  void getAProduct() throws HttpClientErrorException{
         RestTemplate restTemplate = new RestTemplate();
         String id = "066de609-b04a-4b30-b46c-32537c7f1f6e";
+        LocalDateTime dateTime = LocalDateTime.now();
         String url = String.format("%s/stock/%s", apiUrl,id);
 
-        logger.info("Chamando o método getAProduct() e efetuando a leitura de um produto no estoque");
-        StockDto product = restTemplate.getForObject(url, StockDto.class,id );
+        try{
+            logger.info("Chamando o método getAProduct() e efetuando a leitura de um produto no estoque");
+            StockDto product = restTemplate.getForObject(url, StockDto.class,id );
+            logger.info(String.valueOf(product));
+            mediator.getNext(SUCESS_MSG,SERVICE,dateTime);
+        }
+        catch (final  HttpClientErrorException e){
 
-        logger.info(String.valueOf(product));
+            if(HttpStatus.NOT_FOUND.equals(e.getStatusCode())){
+                logger.info(e.getMessage() + "    caiu aquiiii");
+                mediator.getNext(FAIL_MSG,SERVICE,dateTime);
+            }
+        }
     }
 
     public  void putSubAProduct() throws  HttpClientErrorException{
@@ -78,7 +105,7 @@ public class StockServices {
             stock = response.getBody();
             HttpStatusCode resp = response.getStatusCode();
             stock.setId(id.split("/stock/")[1]);
-            mediator.getNext("SUCESS",SERVICE,dateTime );
+            mediator.getNext(SUCESS_MSG,SERVICE,dateTime );
             logger.info("Retorno %s", String.valueOf(stock));
         }
         catch (final HttpClientErrorException e) {
@@ -86,7 +113,7 @@ public class StockServices {
             if(HttpStatus.NOT_FOUND.equals(e.getStatusCode())){
                 //TODO QUANDO NÃO HOUVER QTDE SUFICIENTE
                logger.info(e.getMessage() + "   caiu aquiiii");
-               mediator.getNext("FAIL",SERVICE,dateTime );
+               mediator.getNext(FAIL_MSG,SERVICE,dateTime );
             }
             else{
                 logger.info(e.getMessage());
