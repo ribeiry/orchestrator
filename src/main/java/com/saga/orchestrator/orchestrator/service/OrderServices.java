@@ -1,6 +1,7 @@
 package com.saga.orchestrator.orchestrator.service;
 
 import com.saga.orchestrator.orchestrator.model.OrderDto;
+import com.saga.orchestrator.orchestrator.model.ProdutoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -14,8 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @PropertySource("classpath:application.properties")
@@ -29,8 +29,8 @@ public class OrderServices {
     @Autowired
     public Environment environment;
 
-    @Value("${server.url.orderservice}")
-    private  String apiUrl;
+
+    private  final String apiUrl = "http://localhost:8081/orders/";
     private final  String FAIL_MSG = "FAIL";
 
     private Communicator mediator = new Communicator();
@@ -43,7 +43,6 @@ public class OrderServices {
         OrderDto orderRequest = new OrderDto();
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
-        apiUrl = environment.getProperty("server.url.orderservice");
         logger.info("Chamando o método getAllOrders() e efetuando a leitura de pedidos");
 
         HttpHeaders headers = new HttpHeaders();
@@ -55,14 +54,19 @@ public class OrderServices {
             List<OrderDto> order = new ArrayList<>();
             order = response.getBody();
             logger.info("O retorno de pedidos é " + order);
+            mediator.getNext(SUCESS_MSG,SERVICE,dateTime);
             for (int i = 0; i < order.size(); i++) {
-                logger.info(String.valueOf(order.get(i)));
-                mediator.getNext(SUCESS_MSG,SERVICE,dateTime );
-                //       for (int y = 0; y < order.get(i).getProdutos().size() ; y++) {
-
-                //         logger.info(String.valueOf(order.get(i).getProdutos()));
-
-                //   }
+                Object pedido = order.get(i);
+                if (pedido instanceof LinkedHashMap<?, ?>) {
+                    LinkedHashMap<?, ?> linkedHashMap = (LinkedHashMap<?, ?>) pedido;
+                    ArrayList<?> produtos = (ArrayList<?>) linkedHashMap.get("produtos");
+                    if (produtos != null) {
+                        for (Object produto : produtos) {
+                            System.out.println(produto);
+                            logger.info(produto.toString());
+                        }
+                    }
+                }
             }
         }
         catch (HttpClientErrorException e){
