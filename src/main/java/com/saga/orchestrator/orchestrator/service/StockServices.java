@@ -19,7 +19,7 @@ import java.util.Map;
 @Service
 public class StockServices {
 
-    private final String apiUrl = "http://localhost:8000";
+    private final String apiUrl = "http://localhost:8000/stock/";
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -58,11 +58,10 @@ public class StockServices {
         }
     }
 
-    public  void getAProduct() throws HttpClientErrorException{
+    public  void getAProduct(String id) throws HttpClientErrorException{
         RestTemplate restTemplate = new RestTemplate();
-        String id = "066de609-b04a-4b30-b46c-32537c7f1f6e";
         LocalDateTime dateTime = LocalDateTime.now();
-        String url = String.format("%s/stock/%s", apiUrl,id);
+        String url = String.format(apiUrl,id);
 
         try{
             logger.info("Chamando o método getAProduct() e efetuando a leitura de um produto no estoque");
@@ -79,13 +78,11 @@ public class StockServices {
         }
     }
 
-    public  void putSubAProduct() throws  HttpClientErrorException{
+    public  void putSubAProduct(String id, int qtde) throws  HttpClientErrorException{
         StockDto stock = new StockDto();
         RestTemplate restTemplate = new RestTemplate();
-        String id = "/stock/066de609-b04a-4b30-b46c-32537c7f1f6e";
         String url = String.format("%s%s/sub",apiUrl,id);
         LocalDateTime dateTime = LocalDateTime.now();
-        Integer qtde = 25;
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
         logger.info("Chamando o método putSubAProduct() e efentuando a subtracao de um produto no estoque");
@@ -106,7 +103,7 @@ public class StockServices {
             HttpStatusCode resp = response.getStatusCode();
             stock.setId(id.split("/stock/")[1]);
             mediator.getNext(SUCESS_MSG,SERVICE,dateTime );
-            logger.info("Retorno %s", String.valueOf(stock));
+            logger.info("Retorno " + String.valueOf(stock));
         }
         catch (final HttpClientErrorException e) {
 
@@ -122,13 +119,11 @@ public class StockServices {
         }
     }
 
-    public  void putAddAProduct() throws HttpClientErrorException{
+    public  void putAddAProduct(String id, int qtde) throws HttpClientErrorException{
         StockDto stock = new StockDto();
         RestTemplate restTemplate = new RestTemplate();
-        String id = "/stock/066de609-b04a-4b30-b46c-32537c7f1f6e";
         String url = String.format("%s%s/add",apiUrl,id);
         LocalDateTime dateTime = LocalDateTime.now();
-        Integer qtde = 1;
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
         logger.info("Chamando o método putAddAProduct() e efentuando a subtracao de um produto no estoque");
