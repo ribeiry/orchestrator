@@ -78,7 +78,7 @@ public class StockServices {
         }
     }
 
-    public  void putSubAProduct(String id, int qtde) throws  HttpClientErrorException{
+    public  void SubAProduct(String id, int qtde) throws  HttpClientErrorException{
         StockDto stock = new StockDto();
         RestTemplate restTemplate = new RestTemplate();
         String url = String.format("%s%s/sub",apiUrl,id);
@@ -119,7 +119,7 @@ public class StockServices {
         }
     }
 
-    public  void putAddAProduct(String id, int qtde) throws HttpClientErrorException{
+    public  void AddAProduct(String id, int qtde) throws HttpClientErrorException{
         StockDto stock = new StockDto();
         RestTemplate restTemplate = new RestTemplate();
         String url = String.format("%s%s/add",apiUrl,id);

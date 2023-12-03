@@ -104,7 +104,7 @@ public class OrderServices {
 
     }
 
-    public  OrderDto postCreateOrder(OrderDto orderDto) throws HttpClientErrorException{
+    public  OrderDto CreateOrder(OrderDto orderDto) throws HttpClientErrorException{
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
 
@@ -130,7 +130,7 @@ public class OrderServices {
 
     }
 
-    public void putUpdateOrder(String id) throws  HttpClientErrorException{
+    public void CancelOrder(String id) throws  HttpClientErrorException{
         OrderDto orderDto = new OrderDto();
         RestTemplate restTemplate = new RestTemplate();
         String url = String.format("%s/%s", apiUrl,id);

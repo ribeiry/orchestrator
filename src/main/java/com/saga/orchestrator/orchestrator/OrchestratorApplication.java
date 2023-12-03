@@ -42,7 +42,7 @@ public class OrchestratorApplication {
 		produtos.add(produto);
 		orderDto.setProdutos(produtos);
 
-		orderServices.putUpdateOrder("c50e65b6-d617-4b1b-b7cc-8eb32b33fdc8");
+		orderServices.putCancelOrder("c50e65b6-d617-4b1b-b7cc-8eb32b33fdc8");
 
 	}
 
