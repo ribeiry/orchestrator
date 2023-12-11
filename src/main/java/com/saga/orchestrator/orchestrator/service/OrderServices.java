@@ -26,7 +26,7 @@ public class OrderServices {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final  String SERVICE = "ORDER";
-    private final  String SUCESS_MSG = "SUCESS";
+    private final  String SUCESS_MSG = "SUCCESS";
 
     @Autowired
     public Environment environment;
