@@ -7,7 +7,9 @@ import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 
 import java.time.LocalDateTime;
+import java.time.Year;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class Communicator implements  ICommunicator{
@@ -54,13 +56,23 @@ public class Communicator implements  ICommunicator{
         Jedis redis = redisConnect.ConfigurationRedis("localhost", 6379);
         String hashKey = String.format("Communicator%s", service);
 
-        redis.hgetAll(hashKey);
+        Map<String, String> result = redis.hgetAll(hashKey);
 
-        communicatorDTO.setService("");
+        Iterator<String> iterator =  result.keySet().iterator();
+
+        while (iterator.hasNext()){
+            if("service".equals(iterator.next()))
+                communicatorDTO.setService(result.get(iterator.next()));
+            else if("message".equals(iterator.next())){
+                communicatorDTO.setMessage(result.get(iterator.next()));
+            }
+            else if ("DateTime".equals(iterator.next())) {
+                communicatorDTO.setDateTime(LocalDateTime.parse(result.get(iterator.next())));
+
+            }
+        }
 
         return  communicatorDTO;
 
     }
-
-
 }
