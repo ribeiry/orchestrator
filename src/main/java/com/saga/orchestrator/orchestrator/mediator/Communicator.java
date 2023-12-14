@@ -58,19 +58,10 @@ public class Communicator implements  ICommunicator{
 
         Map<String, String> result = redis.hgetAll(hashKey);
 
-        Iterator<String> iterator =  result.keySet().iterator();
+        communicatorDTO.setService(result.get("service"));
+        communicatorDTO.setMessage(result.get("message"));
+        communicatorDTO.setDateTime(LocalDateTime.parse(result.get("DateTime")));
 
-        while (iterator.hasNext()){
-            if("service".equals(iterator.next()))
-                communicatorDTO.setService(result.get(iterator.next()));
-            else if("message".equals(iterator.next())){
-                communicatorDTO.setMessage(result.get(iterator.next()));
-            }
-            else if ("DateTime".equals(iterator.next())) {
-                communicatorDTO.setDateTime(LocalDateTime.parse(result.get(iterator.next())));
-
-            }
-        }
 
         return  communicatorDTO;
 
