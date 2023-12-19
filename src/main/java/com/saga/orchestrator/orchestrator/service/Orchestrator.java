@@ -13,6 +13,7 @@ public class Orchestrator {
     //TODO: ->>> 1º Consulta Estoque -->>> 2º Gera Pedido  -->> 3º Retira do Estoque -->> 4º Calcula Frete --> 5º Pagamento (calcula soma produtos + frete) --> 6º Envia produto
 
 
+
     private Communicator mediator = new Communicator();
 
     public void callFunctions() {
