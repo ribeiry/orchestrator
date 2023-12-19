@@ -3,7 +3,9 @@ package com.saga.orchestrator.orchestrator.service;
 import com.saga.orchestrator.orchestrator.mediator.Communicator;
 import com.saga.orchestrator.orchestrator.model.Issue;
 import com.saga.orchestrator.orchestrator.model.OrderDto;
+import org.springframework.stereotype.Service;
 
+@Service
 public class Orchestrator {
 
     //TODO: Nessa classe que iremos controlar quais chamadas e qual é o status do semaforo para saber se andaremos
@@ -13,8 +15,7 @@ public class Orchestrator {
 
     private Communicator mediator = new Communicator();
 
-    public boolean callFunctions() {
-        boolean next = true;
+    public void callFunctions() {
 
         StockServices stockServices = new StockServices();
         String idProduto = "";
@@ -52,15 +53,12 @@ public class Orchestrator {
                         stockServices.AddAProduct(idProduto, qtde);
                         orderServices.CancelOrder(order.getCodPedido().toString());
                     }
-                } else {
+                }
+                else {
                     orderServices.CancelOrder(order.getCodPedido().toString());
                 }
             }
-
-
-            return next;
         }
-        return next;
     }
 }
 
