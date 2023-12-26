@@ -3,7 +3,11 @@ package com.saga.orchestrator.orchestrator.service;
 import com.saga.orchestrator.orchestrator.mediator.Communicator;
 import com.saga.orchestrator.orchestrator.model.Issue;
 import com.saga.orchestrator.orchestrator.model.OrderDto;
+import com.saga.orchestrator.orchestrator.model.Product;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.function.ToDoubleBiFunction;
 
 @Service
 public class Orchestrator {
@@ -16,14 +20,20 @@ public class Orchestrator {
 
     private Communicator mediator = new Communicator();
 
-    public void callFunctions() {
+    public void callFunctions(Issue issue) {
 
         StockServices stockServices = new StockServices();
-        String idProduto = "";
-        Integer qtde = 0;
+        List<Product> products = issue.getOrder().getProducts();
 
+        for (Product product : products) {
 
-        stockServices.getAProduct(idProduto);
+            //TRATAR EXCEÇÃO E ADD QTD NA REQUISIÇÃO
+            stockServices.getAProduct(product.getIdProduto());
+            //Integer qtde = 0;
+
+        }
+
+        //stockServices.getAProduct(idProduto);
         if ("SUCCESS".equals(mediator.getStatus("STOCK").getMessage())) {
             OrderServices orderServices = new OrderServices();
             OrderDto order = new OrderDto();
@@ -31,7 +41,13 @@ public class Orchestrator {
 
             if ("SUCCESS".equals(mediator.getStatus("ORDER").getMessage())) {
 
-                stockServices.SubAProduct(idProduto, qtde);
+                //Lista de produto
+                for (Product product : products) {
+                    //TRATAR EXCEÇÃO E ADD QTD NA REQUISIÇÃO
+                    stockServices.SubAProduct(product.getIdProduto(), product.getQuantidade());
+                }
+
+
 
                 if ("SUCCESS".equals(mediator.getStatus("STOCK").getMessage())) {
                     //TODO CALCULA FRETE
@@ -42,16 +58,24 @@ public class Orchestrator {
                         //TODO EFETUA PAGAMENTO
 
                         if ("SUCCESS".equals(mediator.getStatus("TRANSPORT").getMessage())) {
-                            Issue issue = new Issue();
-                            transportServices.sendToTransport(issue);
+//                            Issue issue = new Issue();
+//                            transportServices.sendToTransport(issue);
                         } else {
+
                             //ESTORNA PAGAMENTO
-                            stockServices.AddAProduct(idProduto, qtde);
+                            for (Product product : products) {
+                                stockServices.AddAProduct(product.getIdProduto(), product.getQuantidade());
+                            }
+
+
                             orderServices.CancelOrder(order.getCodPedido().toString());
                         }
 
                     } else {
-                        stockServices.AddAProduct(idProduto, qtde);
+                        //ESTORNA PAGAMENTO
+                        for (Product product : products) {
+                            stockServices.AddAProduct(product.getIdProduto(), product.getQuantidade());
+                        }
                         orderServices.CancelOrder(order.getCodPedido().toString());
                     }
                 }

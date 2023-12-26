@@ -19,7 +19,7 @@ import java.util.Map;
 @Service
 public class StockServices {
 
-    private final String apiUrl = "http://localhost:8000/stock/";
+    private final String apiUrl = "http://127.0.0.1:8000/stock";
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 

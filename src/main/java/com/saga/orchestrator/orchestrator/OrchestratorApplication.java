@@ -43,7 +43,7 @@ public class OrchestratorApplication {
 		produtos.add(produto);
 		orderDto.setProdutos(produtos);
 
-		orderServices.CancelOrder("05b208e6-1425-4d98-a706-711d275054d8");
+//		orderServices.CancelOrder("05b208e6-1425-4d98-a706-711d275054d8");
 
 	}
 
