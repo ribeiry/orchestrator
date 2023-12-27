@@ -2,12 +2,11 @@ package com.saga.orchestrator.orchestrator.service;
 
 import com.saga.orchestrator.orchestrator.mediator.Communicator;
 import com.saga.orchestrator.orchestrator.model.Issue;
-import com.saga.orchestrator.orchestrator.model.OrderDto;
+import com.saga.orchestrator.orchestrator.model.Order;
 import com.saga.orchestrator.orchestrator.model.Product;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.function.ToDoubleBiFunction;
+
 
 @Service
 public class Orchestrator {
@@ -23,7 +22,7 @@ public class Orchestrator {
     public void callFunctions(Issue issue) {
 
         StockServices stockServices = new StockServices();
-        List<Product> products = issue.getOrder().getProducts();
+        List<Product> products = issue.getOrder().getProdutos();
 
         for (Product product : products) {
 
@@ -36,7 +35,7 @@ public class Orchestrator {
         //stockServices.getAProduct(idProduto);
         if ("SUCCESS".equals(mediator.getStatus("STOCK").getMessage())) {
             OrderServices orderServices = new OrderServices();
-            OrderDto order = new OrderDto();
+            Order order = issue.getOrder();
             orderServices.CreateOrder(order);
 
             if ("SUCCESS".equals(mediator.getStatus("ORDER").getMessage())) {

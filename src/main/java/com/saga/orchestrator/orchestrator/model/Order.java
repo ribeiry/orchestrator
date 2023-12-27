@@ -6,9 +6,7 @@ public class Order {
 
     private String codPedido;
     private String codCliente;
-    private List<Product> Products;
-
-
+    private List<Product> produtos;
 
     public String getCodPedido() {
         return codPedido;
@@ -26,11 +24,11 @@ public class Order {
         this.codCliente = codCliente;
     }
 
-    public List<Product> getProducts() {
-        return Products;
+    public List<Product> getProdutos() {
+        return produtos;
     }
 
-    public void setProducts(List<Product> products) {
-        Products = products;
+    public void setProdutos(List<Product> produtos) {
+        this.produtos = produtos;
     }
 }

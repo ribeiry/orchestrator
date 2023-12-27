@@ -1,5 +1,6 @@
 package com.saga.orchestrator.orchestrator.service;
 
+import com.saga.orchestrator.orchestrator.model.Order;
 import com.saga.orchestrator.orchestrator.model.OrderDto;
 import com.saga.orchestrator.orchestrator.model.ProdutoDTO;
 import com.saga.orchestrator.orchestrator.model.StockDto;
@@ -104,19 +105,19 @@ public class OrderServices {
 
     }
 
-    public  OrderDto CreateOrder(OrderDto orderDto) throws HttpClientErrorException{
+    public  Order CreateOrder(Order order) throws HttpClientErrorException{
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<OrderDto> entity = new HttpEntity<OrderDto>(orderDto,headers);
+        HttpEntity<Order> entity = new HttpEntity<Order>(order,headers);
 
         logger.info("Chamando o método postCreateOrder()");
 
         try {
 
-            OrderDto response =  restTemplate.exchange(apiUrl, HttpMethod.POST, entity,OrderDto.class).getBody();
+            Order response =  restTemplate.exchange(apiUrl, HttpMethod.POST, entity, Order.class).getBody();
             logger.info(String.valueOf(response));
             mediator.getNext(SUCESS_MSG,SERVICE,dateTime);
             return  response;
