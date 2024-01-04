@@ -3,7 +3,6 @@ package com.saga.orchestrator.orchestrator.service;
 
 import com.saga.orchestrator.orchestrator.mediator.Communicator;
 import com.saga.orchestrator.orchestrator.model.Issue;
-import com.saga.orchestrator.orchestrator.model.OrderDto;
 import com.saga.orchestrator.orchestrator.model.Transport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +18,7 @@ import java.util.List;
 @Service
 public class TransportServices {
 
-    private String apiUrl = "http://localhost:8000/transport";
+    private String apiUrl = "http://localhost:7000/transport";
     private final String FAIL_MSG = "FAIL";
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -27,6 +26,36 @@ public class TransportServices {
 
     private final String SERVICE = "TRANSPORT";
     private final String SUCESS_MSG = "SUCESS";
+
+
+    //TODO : Criar método de cálculo de frete.
+
+    public String calculateTransport(Issue issue) {
+
+        apiUrl = apiUrl + "/calculator/" + issue.getTransport().getCep();
+//        Transport transportSendRequest = Transport.issueToTransport(issue);
+        RestTemplate restTemplate = new RestTemplate();
+        LocalDateTime dateTime = LocalDateTime.now();
+        logger.info("Chamando o método calcula transport");
+
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//        HttpEntity<Transport> request = new HttpEntity<>(transportSendRequest, headers);
+        try {
+            //precisa testar com o método de pé
+            String resultCalculate = restTemplate.getForObject(apiUrl, String.class);
+            logger.info("O valor do transport é  " + resultCalculate);
+            mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
+            return resultCalculate;
+
+        } catch (HttpClientErrorException e) {
+            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            logger.info(e.getMessage() + "  Caiuu aquiii");
+        }
+
+        return null;
+    }
 
 
     //método de envio

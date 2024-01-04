@@ -81,7 +81,7 @@ public class StockServices {
     public  void SubAProduct(String id, int qtde) throws  HttpClientErrorException{
         StockDto stock = new StockDto();
         RestTemplate restTemplate = new RestTemplate();
-        String url = String.format("%s%s/sub",apiUrl,id);
+        String url = String.format("%s/%s/sub",apiUrl,id);
         LocalDateTime dateTime = LocalDateTime.now();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
@@ -101,7 +101,7 @@ public class StockServices {
             ResponseEntity<StockDto> response = restTemplate.exchange(url , HttpMethod.PUT, requestEntity,  StockDto.class);
             stock = response.getBody();
             HttpStatusCode resp = response.getStatusCode();
-            stock.setId(id.split("/stock/")[1]);
+            stock.setId(id);
             mediator.getNext(SUCESS_MSG,SERVICE,dateTime );
             logger.info("Retorno " + String.valueOf(stock));
         }

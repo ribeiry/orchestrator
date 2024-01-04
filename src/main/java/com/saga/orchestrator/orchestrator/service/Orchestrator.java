@@ -13,7 +13,7 @@ public class Orchestrator {
 
     //TODO: Nessa classe que iremos controlar quais chamadas e qual é o status do semaforo para saber se andaremos
     //TODO: para a proxima requisicao.
-    //TODO: ->>> 1º Consulta Estoque -->>> 2º Gera Pedido  -->> 3º Retira do Estoque -->> 4º Calcula Frete --> 5º Pagamento (calcula soma produtos + frete) --> 6º Envia produto
+    //TODO: ->>> 1º Consulta Estoque -->>> 1º Gera Pedido  -->> 2º Retira do Estoque -->> 4º Calcula Frete --> 5º Pagamento (calcula soma produtos + frete) --> 6º Envia produto
 
 
 
@@ -49,10 +49,21 @@ public class Orchestrator {
 
 
                 if ("SUCCESS".equals(mediator.getStatus("STOCK").getMessage())) {
-                    //TODO CALCULA FRETE
+
+                    //TODO : Chamar método de calculo de frete
                     TransportServices transportServices = new TransportServices();
+                    Double valueTransport = Double.parseDouble(transportServices.calculateTransport(issue));
+
 
                     if ("SUCCESS".equals(mediator.getStatus("PAYMENTS").getMessage())) {
+
+                        //TODO Calucula valor de pagamento
+                        //Feito
+                        Double valueOfPayment = null;
+                        for (Product product : products) {
+                            valueOfPayment = valueOfPayment + product.getPreco();
+                        }
+                        valueOfPayment = valueOfPayment+valueTransport;
 
                         //TODO EFETUA PAGAMENTO
 
