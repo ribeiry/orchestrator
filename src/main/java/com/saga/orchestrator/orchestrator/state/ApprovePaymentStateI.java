@@ -18,7 +18,7 @@ public class ApprovePaymentStateI implements IOrderState {
     public void next(OrderState orderState, Issue issue) {
 
         TransportServices transportServices = new TransportServices();
-
+        transportServices.calculateTransport(issue);
         orderState.nextState(issue);
         PaymentServices paymentServices = new PaymentServices();
         paymentServices.payOrder(issue);
