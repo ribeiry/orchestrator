@@ -13,7 +13,7 @@ import redis.clients.jedis.exceptions.JedisException;
 @EnableCaching
 @Configuration
 public class RedisConfig {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(RedisConfig.class);
 
     public Jedis ConfigurationRedis(String server, int port){
         JedisPool pool = new JedisPool(server, port);

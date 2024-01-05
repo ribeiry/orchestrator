@@ -15,7 +15,7 @@ public class ProductStateI implements IOrderState {
     public void next(OrderState orderState, Issue issue) {
         OrderServices orderServices = new OrderServices();
         orderServices.CreateOrder(issue.getOrder());
-        if ("SUCCESS".equals(mediator.getStatus("ORDER"))) {
+        if ("SUCCESS".equals(mediator.getStatus("ORDER").getMessage())) {
             orderState.setState(new ApprovePaymentStateI());
         }
         else {

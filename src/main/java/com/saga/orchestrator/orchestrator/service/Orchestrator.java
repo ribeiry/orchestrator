@@ -13,7 +13,7 @@ public class Orchestrator {
 
     //TODO: Nessa classe que iremos controlar quais chamadas e qual é o status do semaforo para saber se andaremos
     //TODO: para a proxima requisicao.
-    //TODO: ->>> 1º Gera Pedido  -->> 2º Retira do Estoque -->> 3º Calcula Frete --> 4º Pagamento (calcula soma produtos + frete) --> 5º Envia produto
+    //TODO: ->>> 1º Gera Pedido  & Retira do Estoque -->> 2º Calcula Frete --> 3º Pagamento (calcula soma produtos + frete) --> 5º Envia produto
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private Communicator mediator = new Communicator();
