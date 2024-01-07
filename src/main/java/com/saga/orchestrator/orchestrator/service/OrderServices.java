@@ -3,7 +3,6 @@ package com.saga.orchestrator.orchestrator.service;
 
 import com.saga.orchestrator.orchestrator.model.Order;
 import com.saga.orchestrator.orchestrator.model.OrderDto;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import com.saga.orchestrator.orchestrator.mediator.Communicator;
 import org.slf4j.Logger;
