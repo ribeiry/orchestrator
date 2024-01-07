@@ -8,11 +8,15 @@ import com.saga.orchestrator.orchestrator.service.OrderServices;
 import com.saga.orchestrator.orchestrator.service.PaymentServices;
 import com.saga.orchestrator.orchestrator.service.StockServices;
 import com.saga.orchestrator.orchestrator.service.TransportServices;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 public class ApprovePaymentStateI implements IOrderState {
     private final Communicator mediator = new Communicator();
+
+    public ApprovePaymentStateI() {
+    }
 
     @Override
     public void next(OrderState orderState, Issue issue) {
