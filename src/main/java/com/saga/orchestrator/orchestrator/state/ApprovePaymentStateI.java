@@ -12,7 +12,7 @@ import com.saga.orchestrator.orchestrator.service.TransportServices;
 import java.util.List;
 
 public class ApprovePaymentStateI implements IOrderState {
-    private Communicator mediator = new Communicator();
+    private final Communicator mediator = new Communicator();
 
     @Override
     public void next(OrderState orderState, Issue issue) {
@@ -22,7 +22,7 @@ public class ApprovePaymentStateI implements IOrderState {
         orderState.nextState(issue);
         PaymentServices paymentServices = new PaymentServices();
         paymentServices.payOrder(issue);
-        if ("SUCCESS".equals(mediator.getStatus("PAYMENT"))) {
+        if ("SUCCESS".equals(mediator.getStatus("PAYMENT").getMessage())) {
             orderState.setState(new TransportStateI());
         }
         else {
@@ -34,7 +34,7 @@ public class ApprovePaymentStateI implements IOrderState {
     private void prev(OrderState orderState, Issue issue) {
         StockServices stockServices = new StockServices();
         OrderServices orderServices = new OrderServices();
-        orderState.setState(new ProductStateI());
+        orderState.setState(new StockState());
         orderServices.CancelOrder(issue.getOrder().getCodPedido());
 
         List<Product> products = issue.getOrder().getProdutos();
@@ -44,7 +44,8 @@ public class ApprovePaymentStateI implements IOrderState {
     }
 
     @Override
-    public void printStatus() {
-        System.out.println("O pedido está com pagamento aprovado");
+    public String printStatus() {
+        return "O pedido está com pagamento aprovado";
+
     }
 }

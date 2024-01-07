@@ -23,16 +23,17 @@ public class Orchestrator {
 
        //Cria pedido
        orderState.nextState(issue);
-       orderState.printStatus();
+       logger.info("Getting first state...");
+       logger.info(orderState.printStatus());
 
        //Envia para pagamento
         orderState.nextState(issue);
-        orderState.printStatus();
+        logger.info(orderState.printStatus());
 
         //Envia para Transport
        if("SUCCESS".equals(mediator.getStatus("PAYMENT").getMessage())){
            orderState.nextState(issue);
-           orderState.printStatus();
+           logger.info(orderState.printStatus());
        }
     }
 }

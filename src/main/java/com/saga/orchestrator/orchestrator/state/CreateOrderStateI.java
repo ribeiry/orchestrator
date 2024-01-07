@@ -3,20 +3,19 @@ package com.saga.orchestrator.orchestrator.state;
 import com.saga.orchestrator.orchestrator.mediator.Communicator;
 import com.saga.orchestrator.orchestrator.model.Issue;
 import com.saga.orchestrator.orchestrator.service.OrderServices;
-import com.saga.orchestrator.orchestrator.service.StockServices;
 
 
-public class ProductStateI implements IOrderState {
+public class CreateOrderStateI implements IOrderState {
 
-    private Communicator mediator = new Communicator();
-    private  StockServices stockServices = new StockServices();
+    private final Communicator mediator = new Communicator();
+
 
     @Override
     public void next(OrderState orderState, Issue issue) {
         OrderServices orderServices = new OrderServices();
         orderServices.CreateOrder(issue.getOrder());
-        if ("SUCCESS".equals(mediator.getStatus("ORDER"))) {
-            orderState.setState(new ApprovePaymentStateI());
+        if ("SUCCESS".equals(mediator.getStatus("ORDER").getMessage())) {
+            orderState.setState(new StockState());
         }
         else {
             prev(null,null);
@@ -28,7 +27,8 @@ public class ProductStateI implements IOrderState {
     }
 
     @Override
-    public void printStatus() {
-        System.out.println("O pedido tem produtos no estoque");
+    public String printStatus() {
+        return "O pedido tem produtos no estoque";
+
     }
 }

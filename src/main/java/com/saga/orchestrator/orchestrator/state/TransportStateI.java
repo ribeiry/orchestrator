@@ -18,7 +18,7 @@ public class TransportStateI implements IOrderState {
         transportServices.sendToTransport(issue);
         System.out.println("O pedido já saiu para entrega");
 
-        if (!"SUCCESS".equals(mediator.getStatus("TRANSPORT"))) {
+        if (!"SUCCESS".equals(mediator.getStatus("TRANSPORT").getMessage())) {
             prev(null, issue);
         }
     }
@@ -38,7 +38,8 @@ public class TransportStateI implements IOrderState {
     }
 
     @Override
-    public void printStatus() {
-        System.out.println("O pedido já saiu para entrega");
+    public String printStatus() {
+        return  "O pedido já saiu para entrega";
+
     }
 }

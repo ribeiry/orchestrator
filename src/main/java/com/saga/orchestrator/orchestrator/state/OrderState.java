@@ -3,7 +3,7 @@ package com.saga.orchestrator.orchestrator.state;
 import com.saga.orchestrator.orchestrator.model.Issue;
 
 public class OrderState {
-    private IOrderState state = new ProductStateI();
+    private IOrderState state = new CreateOrderStateI();
     private  Issue issue = new Issue();
     public IOrderState getState() {
         return state;
@@ -17,7 +17,7 @@ public class OrderState {
         state.next(this, this.issue);
     }
 
-    public void printStatus() {
-        state.printStatus();
+    public String printStatus() {
+        return state.printStatus();
     }
 }
