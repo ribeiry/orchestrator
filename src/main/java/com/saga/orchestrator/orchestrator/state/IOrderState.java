@@ -6,5 +6,5 @@ public interface IOrderState {
 
    void next(OrderState orderState, Issue issue);
 
-    void printStatus();
+    String printStatus();
 }
