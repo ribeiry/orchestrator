@@ -47,7 +47,8 @@ public class ApprovePaymentStateI implements IOrderState {
     }
 
     @Override
-    public void printStatus() {
+    public String printStatus() {
         System.out.println("O pedido está com pagamento aprovado");
+        return null;
     }
 }

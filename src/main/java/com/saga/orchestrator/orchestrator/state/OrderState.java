@@ -17,7 +17,7 @@ public class OrderState {
         state.next(this, issue);
     }
 
-    public void printStatus() {
-        state.printStatus();
+    public String printStatus() {
+        return state.printStatus();
     }
 }

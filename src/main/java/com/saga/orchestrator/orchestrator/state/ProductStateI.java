@@ -28,7 +28,8 @@ public class ProductStateI implements IOrderState {
     }
 
     @Override
-    public void printStatus() {
+    public String printStatus() {
         System.out.println("O pedido tem produtos no estoque");
+        return null;
     }
 }
