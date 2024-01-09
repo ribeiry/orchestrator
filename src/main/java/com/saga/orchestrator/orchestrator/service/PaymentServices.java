@@ -3,7 +3,6 @@ package com.saga.orchestrator.orchestrator.service;
 import com.saga.orchestrator.orchestrator.mediator.Communicator;
 import com.saga.orchestrator.orchestrator.model.Issue;
 import com.saga.orchestrator.orchestrator.model.Payment;
-import com.saga.orchestrator.orchestrator.model.Transport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;

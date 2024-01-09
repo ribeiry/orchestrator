@@ -1,13 +1,8 @@
 package com.saga.orchestrator.orchestrator.service;
 
+
+import com.saga.orchestrator.orchestrator.model.Order;
 import com.saga.orchestrator.orchestrator.model.OrderDto;
-import com.saga.orchestrator.orchestrator.model.ProdutoDTO;
-import com.saga.orchestrator.orchestrator.model.StockDto;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.http.*;
 import com.saga.orchestrator.orchestrator.mediator.Communicator;
 import org.slf4j.Logger;
@@ -20,7 +15,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
-@PropertySource("classpath:application.properties")
 public class OrderServices {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -28,18 +22,15 @@ public class OrderServices {
     private final  String SERVICE = "ORDER";
     private final  String SUCESS_MSG = "SUCCESS";
 
-    @Autowired
-    public Environment environment;
-
-
     private  final String apiUrl = "http://localhost:8081/orders";
+
+   // @Value("${server.url.order-service}")
+   // private String apiUrl ;
+
+
     private final  String FAIL_MSG = "FAIL";
 
     private Communicator mediator = new Communicator();
-
-    public OrderServices() {
-    }
-
 
     public void getAllOrders() throws HttpClientErrorException {
         OrderDto orderRequest = new OrderDto();
@@ -77,10 +68,10 @@ public class OrderServices {
         }
     }
 
-    public void getAOrders() throws HttpClientErrorException {
+    public void getAOrders(String id) throws HttpClientErrorException {
         OrderDto orderRequest = new OrderDto();
         RestTemplate restTemplate = new RestTemplate();
-        String url = String.format("%s/cf1048be-a914-494b-984d-1253c6efad1e", apiUrl);
+        String url = String.format("%s/id", apiUrl,id);
         LocalDateTime dateTime = LocalDateTime.now();
         logger.info("Chamando o método getAOrders() e efetuando a leitura de pedidos");
 
@@ -104,19 +95,19 @@ public class OrderServices {
 
     }
 
-    public  OrderDto CreateOrder(OrderDto orderDto) throws HttpClientErrorException{
+    public  Order CreateOrder(Order order) throws HttpClientErrorException{
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<OrderDto> entity = new HttpEntity<OrderDto>(orderDto,headers);
+        HttpEntity<Order> entity = new HttpEntity<Order>(order,headers);
 
         logger.info("Chamando o método postCreateOrder()");
 
         try {
 
-            OrderDto response =  restTemplate.exchange(apiUrl, HttpMethod.POST, entity,OrderDto.class).getBody();
+            Order response =  restTemplate.exchange(apiUrl, HttpMethod.POST, entity, Order.class).getBody();
             logger.info(String.valueOf(response));
             mediator.getNext(SUCESS_MSG,SERVICE,dateTime);
             return  response;

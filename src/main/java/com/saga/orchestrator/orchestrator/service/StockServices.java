@@ -19,13 +19,13 @@ import java.util.Map;
 @Service
 public class StockServices {
 
-    private final String apiUrl = "http://localhost:8000/stock/";
+    private final String apiUrl = "http://127.0.0.1:8000/stock";
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final  String SERVICE = "STOCK";
 
-    private final  String SUCESS_MSG = "SUCESS";
+    private final  String SUCESS_MSG = "SUCCESS";
 
     private final  String FAIL_MSG = "FAIL";
 
@@ -61,11 +61,11 @@ public class StockServices {
     public  void getAProduct(String id) throws HttpClientErrorException{
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
-        String url = String.format(apiUrl,id);
+        String url = String.format("%s/%s", apiUrl,id);
 
         try{
             logger.info("Chamando o método getAProduct() e efetuando a leitura de um produto no estoque");
-            StockDto product = restTemplate.getForObject(url, StockDto.class,id );
+            StockDto product = restTemplate.getForObject(url, StockDto.class);
             logger.info(String.valueOf(product));
             mediator.getNext(SUCESS_MSG,SERVICE,dateTime);
         }
@@ -81,7 +81,7 @@ public class StockServices {
     public  void SubAProduct(String id, int qtde) throws  HttpClientErrorException{
         StockDto stock = new StockDto();
         RestTemplate restTemplate = new RestTemplate();
-        String url = String.format("%s%s/sub",apiUrl,id);
+        String url = String.format("%s/%s/sub",apiUrl,id);
         LocalDateTime dateTime = LocalDateTime.now();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
@@ -95,13 +95,13 @@ public class StockServices {
         Map<String, String> param = new HashMap<String, String>();
         param.put("id", id);
 
-        logger.info("O Id do produto é: "+ id.split("/stock/")[1]);
+        logger.info("O Id do produto é: {}", id);
         HttpEntity<StockDto> requestEntity = new HttpEntity<StockDto>(stock,headers);
         try {
             ResponseEntity<StockDto> response = restTemplate.exchange(url , HttpMethod.PUT, requestEntity,  StockDto.class);
             stock = response.getBody();
             HttpStatusCode resp = response.getStatusCode();
-            stock.setId(id.split("/stock/")[1]);
+            stock.setId(id);
             mediator.getNext(SUCESS_MSG,SERVICE,dateTime );
             logger.info("Retorno " + String.valueOf(stock));
         }
