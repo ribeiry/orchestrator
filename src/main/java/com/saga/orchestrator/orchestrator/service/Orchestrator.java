@@ -21,7 +21,7 @@ public class Orchestrator {
     public void callFunctions(Issue issue) {
        OrderState orderState = new OrderState();
 
-       //Cria pedido
+       //Cria pedidoo
        orderState.nextState(issue);
        logger.info("Getting first state...");
        logger.info(orderState.printStatus());
