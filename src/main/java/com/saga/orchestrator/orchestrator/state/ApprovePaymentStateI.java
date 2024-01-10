@@ -25,7 +25,7 @@ public class ApprovePaymentStateI implements IOrderState {
 
         PaymentServices paymentServices = new PaymentServices();
         paymentServices.payOrder(issue);
-        if ("SUCCESS".equals(mediator.getStatus("PAYMENT"))) {
+        if ("SUCCESS".equals(mediator.getStatus("PAYMENT").getMessage())) {
             orderState.setState(new TransportStateI());
         }
         else {

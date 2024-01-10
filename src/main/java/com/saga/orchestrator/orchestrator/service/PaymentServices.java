@@ -18,20 +18,20 @@ import java.util.List;
 public class PaymentServices {
 
 
-    private String apiUrl = "http://localhost:8000/payment";
+    private String apiUrl = "http://localhost:8082/payments";
     private final String FAIL_MSG = "FAIL";
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private Communicator mediator = new Communicator();
 
-    private final String SERVICE = "PAYMENT";
+    private final String SERVICE = "PAYMENTS";
     private final String SUCESS_MSG = "SUCESS";
 
 
     //método de pagamento
     public void payOrder(Issue issue) {
 
-        apiUrl = apiUrl + "/cancel";
+        apiUrl = apiUrl + "/pay";
         Payment PaymenttSendRequest = Payment.issueToPayment(issue);
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
@@ -43,6 +43,7 @@ public class PaymentServices {
         HttpEntity<Payment> request = new HttpEntity<>(PaymenttSendRequest, headers);
         try {
             //precisa testar com o método de pé
+            // TODO : O OrderID está nulo no Issue, precisa ser populado pois é mandatório para o serviço de pagamento.
             String responseSendPayment = restTemplate.postForObject(apiUrl, request, String.class);
             List<Payment> payments = new ArrayList<>();
             logger.info("O id do pagamento é  " + responseSendPayment);

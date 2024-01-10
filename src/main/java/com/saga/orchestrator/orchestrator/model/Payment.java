@@ -2,15 +2,17 @@ package com.saga.orchestrator.orchestrator.model;
 
 public class Payment {
 
+    String orderId;
     String paymentType;
-    Double value;
+    Double paymentValue;
     Datapayments dataPayments;
 
     public static Payment issueToPayment(Issue issue) {
 
         Payment payment = new Payment();
 
-        payment.setValue(issue.getPayment().getValue());
+        payment.setOrderId(issue.getPayment().getOrderId());
+        payment.setPaymentValue(issue.getPayment().getPaymentValue());
         payment.setPaymentType(issue.getPayment().getPaymentType());
 
         Datapayments datapayments = new Datapayments();
@@ -25,6 +27,13 @@ public class Payment {
 
     }
 
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
 
     public String getPaymentType() {
         return paymentType;
@@ -34,12 +43,12 @@ public class Payment {
         this.paymentType = paymentType;
     }
 
-    public Double getValue() {
-        return value;
+    public Double getPaymentValue() {
+        return paymentValue;
     }
 
-    public void setValue(Double value) {
-        this.value = value;
+    public void setPaymentValue(Double paymentValue) {
+        this.paymentValue = paymentValue;
     }
 
     public Datapayments getDataPayments() {
