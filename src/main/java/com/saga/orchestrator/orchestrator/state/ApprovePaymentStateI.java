@@ -18,11 +18,15 @@ public class ApprovePaymentStateI implements IOrderState {
     public void next(OrderState orderState, Issue issue) {
 
 
-//        //TODO calcula frete
+        //Calcula o valor do frete
         TransportServices transportServices = new TransportServices();
-        transportServices.calculateTransport(issue);
+        Double transportValue = Double.parseDouble(transportServices.calculateTransport(issue));
 
+        //Adiciona ao valor do pedido
+        Double totalValue = transportValue + issue.getPayment().getPaymentValue();
+        issue.getPayment().setPaymentValue(totalValue);
 
+        //Efetua pgamento do pedido
         PaymentServices paymentServices = new PaymentServices();
         paymentServices.payOrder(issue);
         if ("SUCCESS".equals(mediator.getStatus("PAYMENT").getMessage())) {
