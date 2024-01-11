@@ -95,7 +95,7 @@ public class OrderServices {
 
     }
 
-    public  Order CreateOrder(Order order) throws HttpClientErrorException{
+    public  String CreateOrder(Order order) throws HttpClientErrorException{
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
 
@@ -107,8 +107,9 @@ public class OrderServices {
 
         try {
 
-            Order response =  restTemplate.exchange(apiUrl, HttpMethod.POST, entity, Order.class).getBody();
-            logger.info(String.valueOf(response));
+            String response =  restTemplate.exchange(apiUrl, HttpMethod.POST, entity,String.class).getBody();
+            logger.info("ID do pedido criado retornado {}", response);
+
             mediator.getNext(SUCESS_MSG,SERVICE,dateTime);
             return  response;
         }

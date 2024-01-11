@@ -43,7 +43,6 @@ public class PaymentServices {
         HttpEntity<Payment> request = new HttpEntity<>(PaymenttSendRequest, headers);
         try {
             //precisa testar com o método de pé
-            // TODO : O OrderID está nulo no Issue, precisa ser populado pois é mandatório para o serviço de pagamento.
             String responseSendPayment = restTemplate.postForObject(apiUrl, request, String.class);
             List<Payment> payments = new ArrayList<>();
             logger.info("O id do pagamento é  " + responseSendPayment);

@@ -13,7 +13,8 @@ public class CreateOrderStateI implements IOrderState {
     @Override
     public void next(OrderState orderState, Issue issue) {
         OrderServices orderServices = new OrderServices();
-        orderServices.CreateOrder(issue.getOrder());
+        String codPedido =  orderServices.CreateOrder(issue.getOrder());
+        issue.getOrder().setCodPedido(codPedido);
         if ("SUCCESS".equals(mediator.getStatus("ORDER").getMessage())) {
             orderState.setState(new StockState());
         }
