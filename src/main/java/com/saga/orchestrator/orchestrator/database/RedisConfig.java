@@ -15,14 +15,14 @@ import redis.clients.jedis.exceptions.JedisException;
 public class RedisConfig {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public Jedis ConfigurationRedis(String server, int port){
+    public Jedis configurationRedis(String server, int port){
         JedisPool pool = new JedisPool(server, port);
         try(Jedis jedis = pool.getResource()){
             logger.info("Houve um sucesso a conectar com REDIS database");
             return jedis;
         }
         catch (JedisException e ){
-            logger.info("Erro ao montar o Objeto do redis : " + e.getMessage());
+            logger.info("Erro ao montar o Objeto do redis {} ", e.getMessage());
             return  null;
         }
 

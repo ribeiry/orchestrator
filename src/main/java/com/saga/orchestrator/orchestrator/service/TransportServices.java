@@ -55,8 +55,6 @@ public class TransportServices {
         return null;
     }
 
-
-    //método de envio
     public void sendToTransport(Issue issue) {
 
         apiUrl = apiUrl + "/send";
@@ -73,7 +71,7 @@ public class TransportServices {
             //precisa testar com o método de pé
             String responseSendTransport = restTemplate.postForObject(apiUrl, request, String.class);
             List<Transport> transport = new ArrayList<>();
-            logger.info("O id do transport é  " + responseSendTransport);
+            logger.info("O id do transport é  {} ", responseSendTransport);
             mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
 
         } catch (HttpClientErrorException e) {
@@ -98,7 +96,7 @@ public class TransportServices {
         HttpEntity<String> request = new HttpEntity<>(idTransport, headers);
         try {
             String response = restTemplate.postForObject(apiUrl, request, String.class);
-            logger.info("Pedido canecelado " + response);
+            logger.info("Pedido canecelado {} ", response);
             mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
 
         } catch (HttpClientErrorException e) {

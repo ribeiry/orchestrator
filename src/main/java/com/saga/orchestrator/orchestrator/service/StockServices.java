@@ -78,7 +78,7 @@ public class StockServices {
         }
     }
 
-    public  void SubAProduct(String id, int qtde) throws  HttpClientErrorException{
+    public  void subAProduct(String id, int qtde) throws  HttpClientErrorException{
         StockDto stock = new StockDto();
         RestTemplate restTemplate = new RestTemplate();
         String url = String.format("%s/%s/sub",apiUrl,id);

@@ -16,7 +16,7 @@ public class StockState implements  IOrderState{
         StockServices stockServices = new StockServices();
         List<Product> products = issue.getOrder().getProdutos();
         for (Product product : products){
-            stockServices.SubAProduct(product.getIdProduto(), product.getQuantidade());
+            stockServices.subAProduct(product.getIdProduto(), product.getQuantidade());
         }
         if ("SUCCESS".equals(mediator.getStatus("ORDER").getMessage())) {
             orderState.setState(new ApprovePaymentStateI());

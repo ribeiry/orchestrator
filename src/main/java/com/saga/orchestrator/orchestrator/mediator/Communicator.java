@@ -23,7 +23,7 @@ public class Communicator implements  ICommunicator{
 
         String hashKey = String.format("Communicator%s", service);
 
-        Jedis redis = redisConnect.ConfigurationRedis("localhost", 6379);
+        Jedis redis = redisConnect.configurationRedis("localhost", 6379);
         logger.info("Iniciando a classe de proximo serivco");
         if("SUCCESS".equalsIgnoreCase(message)) {
             Map<String, String> hash = new HashMap<>();
@@ -52,7 +52,7 @@ public class Communicator implements  ICommunicator{
 
     public CommunicatorDTO getStatus(String service){
         CommunicatorDTO communicatorDTO = new CommunicatorDTO();
-        Jedis redis = redisConnect.ConfigurationRedis("localhost", 6379);
+        Jedis redis = redisConnect.configurationRedis("localhost", 6379);
         String hashKey = String.format("Communicator%s", service);
 
         Map<String, String> result = redis.hgetAll(hashKey);
