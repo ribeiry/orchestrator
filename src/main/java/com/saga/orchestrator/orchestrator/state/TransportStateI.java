@@ -33,7 +33,7 @@ public class TransportStateI implements IOrderState {
         orderServices.CancelOrder(issue.getOrder().getCodPedido());
         paymentServices.cancelTransport("IDPAGAMENTO");
         for (Product product : products) {
-            stockServices.AddAProduct(product.getIdProduto(), product.getQuantidade());
+            stockServices.addAProduct(product.getIdProduto(), product.getQuantidade());
         }
     }
 

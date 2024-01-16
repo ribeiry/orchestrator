@@ -22,7 +22,6 @@ public class Communicator implements  ICommunicator{
     {
 
         String hashKey = String.format("Communicator%s", service);
-        CommunicatorDTO communicator = new CommunicatorDTO();
 
         Jedis redis = redisConnect.ConfigurationRedis("localhost", 6379);
         logger.info("Iniciando a classe de proximo serivco");

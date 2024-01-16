@@ -28,8 +28,6 @@ public class TransportServices {
     private final String SUCESS_MSG = "SUCESS";
 
 
-    //TODO : Criar método de cálculo de frete.
-
     public String calculateTransport(Issue issue) {
 
         apiUrl = apiUrl + "/calculator/" + issue.getTransport().getCep();
@@ -45,13 +43,13 @@ public class TransportServices {
         try {
             //precisa testar com o método de pé
             String resultCalculate = restTemplate.getForObject(apiUrl, String.class);
-            logger.info("O valor do transport é  " + resultCalculate);
+            logger.info("O valor do transport é  {} ", resultCalculate);
             mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
             return resultCalculate;
 
         } catch (HttpClientErrorException e) {
             mediator.getNext(FAIL_MSG, SERVICE, dateTime);
-            logger.info(e.getMessage() + "  Caiuu aquiii");
+            logger.info(e.getMessage()  + "  Caiuu aquiii");
         }
 
         return null;

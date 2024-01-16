@@ -90,7 +90,7 @@ public class StockServices {
         HttpHeaders headers = new HttpHeaders();
         headers.set("x-qtde", String.valueOf(qtde));
 
-        logger.info("Valor da quantidade retirada "+ String.valueOf(qtde));
+        logger.info("Valor da quantidade retirada {} ", qtde);
 
         Map<String, String> param = new HashMap<String, String>();
         param.put("id", id);
@@ -103,14 +103,14 @@ public class StockServices {
             HttpStatusCode resp = response.getStatusCode();
             stock.setId(id);
             mediator.getNext(SUCESS_MSG,SERVICE,dateTime );
-            logger.info("Retorno " + String.valueOf(stock));
+            logger.info("Retorno  {}", stock);
         }
         catch (final HttpClientErrorException e) {
 
             if(HttpStatus.NOT_FOUND.equals(e.getStatusCode())){
-                //TODO QUANDO NÃO HOUVER QTDE SUFICIENTE
-               logger.info(e.getMessage() + "   caiu aquiiii");
-               mediator.getNext(FAIL_MSG,SERVICE,dateTime );
+                logger.info("==== Nāo há quantidade suficiente de produtos ===");
+                logger.info(e.getMessage() );
+                mediator.getNext(FAIL_MSG,SERVICE,dateTime );
             }
             else{
                 logger.info(e.getMessage());
@@ -119,7 +119,7 @@ public class StockServices {
         }
     }
 
-    public  void AddAProduct(String id, int qtde) throws HttpClientErrorException{
+    public  void addAProduct(String id, int qtde) throws HttpClientErrorException{
         StockDto stock = new StockDto();
         RestTemplate restTemplate = new RestTemplate();
         String url = String.format("%s%s/add",apiUrl,id);
@@ -131,12 +131,12 @@ public class StockServices {
         HttpHeaders headers = new HttpHeaders();
         headers.set("x-qtde", String.valueOf(qtde));
 
-        logger.info("Valor da quantidade retirada "+ String.valueOf(qtde));
+        logger.info("Valor da quantidade retirada {} ", qtde);
 
         Map<String, String> param = new HashMap<String, String>();
         param.put("id", id);
 
-        logger.info("O Id do produto é: "+ id.split("/stock/")[1]);
+        logger.info("O Id do produto é: {} ", id);
 
 
         HttpEntity<StockDto> requestEntity = new HttpEntity<StockDto>(stock,headers);
@@ -149,8 +149,8 @@ public class StockServices {
         }
         catch (final HttpClientErrorException e ){
             if(HttpStatus.NOT_FOUND.equals(e.getStatusCode())){
-                //TODO QUANDO NÃO HOUVER QTDE SUFICIENTE
-                logger.info(e.getMessage() + "   caiu aquiiii");
+                logger.info("Nāo tem o produto informado");
+                logger.info(e.getMessage());
                 mediator.getNext("FAIL",SERVICE,dateTime );
             }
             else{

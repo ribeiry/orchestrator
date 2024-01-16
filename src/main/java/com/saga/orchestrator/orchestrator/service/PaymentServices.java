@@ -69,7 +69,7 @@ public class PaymentServices {
         HttpEntity<String> request = new HttpEntity<>(idPayment, headers);
         try {
             String response = restTemplate.postForObject(apiUrl, request, String.class);
-            logger.info("Pedido canecelado " + response);
+            logger.info("Pedido cancelado " + response);
             mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
 
         } catch (HttpClientErrorException e) {

@@ -17,8 +17,11 @@ public class ApprovePaymentStateI implements IOrderState {
     @Override
     public void next(OrderState orderState, Issue issue) {
 
+<<<<<<< HEAD
 
         //Calcula o valor do frete
+=======
+>>>>>>> 995f48f (some adjusting)
         TransportServices transportServices = new TransportServices();
         Double transportValue = Double.parseDouble(transportServices.calculateTransport(issue));
 
@@ -46,7 +49,7 @@ public class ApprovePaymentStateI implements IOrderState {
 
         List<Product> products = issue.getOrder().getProdutos();
         for (Product product : products) {
-            stockServices.AddAProduct(product.getIdProduto(), product.getQuantidade());
+            stockServices.addAProduct(product.getIdProduto(), product.getQuantidade());
         }
     }
 
