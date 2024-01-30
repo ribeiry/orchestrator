@@ -3,7 +3,9 @@ package com.saga.orchestrator.orchestrator.state;
 
 import com.saga.orchestrator.orchestrator.mediator.Communicator;
 import com.saga.orchestrator.orchestrator.model.Issue;
+import com.saga.orchestrator.orchestrator.model.OrderDto;
 import com.saga.orchestrator.orchestrator.model.Product;
+import com.saga.orchestrator.orchestrator.model.ProdutoDTO;
 import com.saga.orchestrator.orchestrator.service.OrderServices;
 import com.saga.orchestrator.orchestrator.service.PaymentServices;
 import com.saga.orchestrator.orchestrator.service.StockServices;
@@ -17,16 +19,18 @@ public class ApprovePaymentStateI implements IOrderState {
     @Override
     public void next(OrderState orderState, Issue issue) {
 
-<<<<<<< HEAD
 
-        //Calcula o valor do frete
-=======
->>>>>>> 995f48f (some adjusting)
         TransportServices transportServices = new TransportServices();
+        //TODO Tratar a excecao
         Double transportValue = Double.parseDouble(transportServices.calculateTransport(issue));
-
+        Double somaProduct = (double) 0;
         //Adiciona ao valor do pedido
-        Double totalValue = transportValue + issue.getPayment().getPaymentValue();
+        List<Product> produtos = issue.getOrder().getProdutos();
+        for (Product produto : produtos) {
+            somaProduct += produto.getPreco().doubleValue();
+        }
+
+        Double totalValue = transportValue + somaProduct;
         issue.getPayment().setPaymentValue(totalValue);
 
         //Efetua pgamento do pedido

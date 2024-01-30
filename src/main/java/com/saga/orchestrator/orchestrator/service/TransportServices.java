@@ -18,7 +18,7 @@ import java.util.List;
 @Service
 public class TransportServices {
 
-    private String apiUrl = "http://localhost:7000/transport";
+    private String apiUrl = "http://localhost:8001/transport";
     private final String FAIL_MSG = "FAIL";
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
