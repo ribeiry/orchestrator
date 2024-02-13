@@ -11,7 +11,7 @@ public class Payment {
 
         Payment payment = new Payment();
 
-        payment.setOrderId(issue.getPayment().getOrderId());
+        payment.setOrderId(issue.getOrder().getCodPedido());
         payment.setPaymentValue(issue.getPayment().getPaymentValue());
         payment.setPaymentType(issue.getPayment().getPaymentType());
 

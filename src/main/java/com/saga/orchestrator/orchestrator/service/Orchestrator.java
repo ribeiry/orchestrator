@@ -18,7 +18,10 @@ public class Orchestrator {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private Communicator mediator = new Communicator();
 
-    public void callFunctions(Issue issue) {
+    public String callFunctions(Issue issue) {
+
+       String cod_pedido = null;
+
        OrderState orderState = new OrderState();
 
        //Cria pedido
@@ -38,11 +41,15 @@ public class Orchestrator {
         logger.info(orderState.printStatus());
 
         //Envia para Transport
-       if("SUCCESS".equals(mediator.getStatus("PAYMENT").getMessage())){
+       if("SUCCESS".equals(mediator.getStatus("PAYMENTS").getMessage())){
            orderState.nextState(issue);
            logger.info("Getting fourth state...");
            logger.info(orderState.printStatus());
+
+           cod_pedido = issue.getOrder().getCodPedido();
        }
+
+       return cod_pedido;
     }
 }
 

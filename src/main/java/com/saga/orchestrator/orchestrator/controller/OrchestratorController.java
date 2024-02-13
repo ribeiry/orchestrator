@@ -22,9 +22,9 @@ public class OrchestratorController {
     public ResponseEntity<String> issueOrder(@RequestBody Issue issue){
 
         System.out.println("Starting...");
-        orchestrator.callFunctions(issue);
+        String cod_pedido = orchestrator.callFunctions(issue);
 
-        return ResponseEntity.status(HttpStatus.OK).body("");
+        return ResponseEntity.status(HttpStatus.OK).body(cod_pedido);
 
     }
 

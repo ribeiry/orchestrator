@@ -66,17 +66,4 @@ public class Transport {
         this.uf = uf;
     }
 
-
-    public static Transport issueToTransport(Issue issue) {
-        Transport transport = new Transport();
-
-        transport.setCep(issue.getTransport().getCep());
-        transport.setRua(issue.getTransport().getRua());
-        transport.setNumero(issue.getTransport().getNumero());
-        transport.setBairro(issue.getTransport().getBairro());
-        transport.setCidade(issue.getTransport().getCidade());
-        transport.setUf(issue.getTransport().getUf());
-        return transport;
-    }
-
 }

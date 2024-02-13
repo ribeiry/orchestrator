@@ -25,7 +25,7 @@ public class PaymentServices {
     private Communicator mediator = new Communicator();
 
     private final String SERVICE = "PAYMENTS";
-    private final String SUCESS_MSG = "SUCESS";
+    private final String SUCESS_MSG = "SUCCESS";
 
 
     //método de pagamento

@@ -108,6 +108,7 @@ public class OrderServices {
         try {
 
             String response =  restTemplate.exchange(apiUrl, HttpMethod.POST, entity,String.class).getBody();
+            response = response.replaceAll("\"", "");
             logger.info("ID do pedido criado retornado {}", response);
 
             mediator.getNext(SUCESS_MSG,SERVICE,dateTime);

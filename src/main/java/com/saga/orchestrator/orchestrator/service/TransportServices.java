@@ -4,6 +4,7 @@ package com.saga.orchestrator.orchestrator.service;
 import com.saga.orchestrator.orchestrator.mediator.Communicator;
 import com.saga.orchestrator.orchestrator.model.Issue;
 import com.saga.orchestrator.orchestrator.model.Transport;
+import com.saga.orchestrator.orchestrator.model.TransportDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
@@ -25,7 +26,7 @@ public class TransportServices {
     private Communicator mediator = new Communicator();
 
     private final String SERVICE = "TRANSPORT";
-    private final String SUCESS_MSG = "SUCESS";
+    private final String SUCESS_MSG = "SUCCESS";
 
 
     public String calculateTransport(Issue issue) {
@@ -58,7 +59,7 @@ public class TransportServices {
     public void sendToTransport(Issue issue) {
 
         apiUrl = apiUrl + "/send";
-        Transport transportSendRequest = Transport.issueToTransport(issue);
+        TransportDto transportSendRequest = TransportDto.issueToTransport(issue);
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
         logger.info("Chamando o método send tranport() e efetuando a leitura de pedidos");
@@ -66,7 +67,7 @@ public class TransportServices {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<Transport> request = new HttpEntity<>(transportSendRequest, headers);
+        HttpEntity<TransportDto> request = new HttpEntity<>(transportSendRequest, headers);
         try {
             //precisa testar com o método de pé
             String responseSendTransport = restTemplate.postForObject(apiUrl, request, String.class);
