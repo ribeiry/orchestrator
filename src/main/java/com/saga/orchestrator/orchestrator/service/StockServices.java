@@ -117,6 +117,10 @@ public class StockServices {
 
             }
         }
+        catch (Exception e){
+            mediator.getNext(FAIL_MSG,SERVICE,dateTime );
+            logger.error(e.getMessage());
+        }
     }
 
     public  void addAProduct(String id, int qtde) throws HttpClientErrorException{

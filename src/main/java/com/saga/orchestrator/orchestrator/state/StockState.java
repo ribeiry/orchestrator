@@ -17,12 +17,15 @@ public class StockState implements  IOrderState{
         List<Product> products = issue.getOrder().getProdutos();
         for (Product product : products){
             stockServices.subAProduct(product.getIdProduto(), product.getQuantidade());
+            if (!"SUCCESS".equals(mediator.getStatus("STOCK").getMessage())) {
+                break;
+            }
         }
-        if ("SUCCESS".equals(mediator.getStatus("ORDER").getMessage())) {
+        if ("SUCCESS".equals(mediator.getStatus("STOCK").getMessage())) {
             orderState.setState(new ApprovePaymentStateI());
         }
         else {
-            prev(null,issue);
+            prev(orderState,issue);
         }
     }
 
