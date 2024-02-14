@@ -45,6 +45,7 @@ public class PaymentServices {
             //precisa testar com o método de pé
             String responseSendPayment = restTemplate.postForObject(apiUrl, request, String.class);
             List<Payment> payments = new ArrayList<>();
+            issue.getPayment().setPaymentId(responseSendPayment);
             logger.info("O id do pagamento é  " + responseSendPayment);
             mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
 
@@ -56,7 +57,7 @@ public class PaymentServices {
     }
 
 
-    public void cancelTransport(String idPayment){
+    public void cancelPayment(String idPayment){
 
         apiUrl = apiUrl + "/cancel/" + idPayment;
         RestTemplate restTemplate = new RestTemplate();

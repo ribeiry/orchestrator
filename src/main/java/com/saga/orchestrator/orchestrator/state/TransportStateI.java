@@ -7,34 +7,28 @@ import com.saga.orchestrator.orchestrator.service.OrderServices;
 import com.saga.orchestrator.orchestrator.service.PaymentServices;
 import com.saga.orchestrator.orchestrator.service.StockServices;
 import com.saga.orchestrator.orchestrator.service.TransportServices;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class TransportStateI implements IOrderState {
-    private Communicator mediator = new Communicator();
-    @Override
-    public void next(OrderState orderState, Issue issue) {
-        TransportServices transportServices = new TransportServices();
-        transportServices.sendToTransport(issue);
-        System.out.println("O pedido já saiu para entrega");
 
-        if (!"SUCCESS".equals(mediator.getStatus("TRANSPORT").getMessage())) {
-            prev(null, issue);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+    @Override
+    public void next(OrderState orderState, Issue issue, boolean validaPrev) {
+        if(validaPrev) {
+            TransportServices transportServices = new TransportServices();
+            transportServices.sendToTransport(issue);
+           logger.info("O pedido já saiu para entrega");
+
         }
     }
 
-    private void prev(OrderState orderState, Issue issue) {
-        PaymentServices paymentServices = new PaymentServices();
-        StockServices stockServices = new StockServices();
-        List<Product> products = issue.getOrder().getProdutos();
-        OrderServices orderServices = new OrderServices();
-
+    public void prevState(OrderState orderState, Issue issue, boolean validaPrev) {
+        TransportServices transportServices = new TransportServices();
+        transportServices.cancelTransport(issue.getTransport().getTransport_id());
         orderState.setState(new ApprovePaymentStateI());
-        orderServices.CancelOrder(issue.getOrder().getCodPedido());
-        paymentServices.cancelTransport("IDPAGAMENTO");
-        for (Product product : products) {
-            stockServices.addAProduct(product.getIdProduto(), product.getQuantidade());
-        }
     }
 
     @Override

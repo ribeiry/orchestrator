@@ -7,6 +7,16 @@ public class Payment {
     Double paymentValue;
     Datapayments dataPayments;
 
+    String paymentId;
+
+    public String getPaymentId() {
+        return paymentId;
+    }
+
+    public void setPaymentId(String paymentId) {
+        this.paymentId = paymentId;
+    }
+
     public static Payment issueToPayment(Issue issue) {
 
         Payment payment = new Payment();
@@ -26,6 +36,7 @@ public class Payment {
         return payment;
 
     }
+
 
     public String getOrderId() {
         return orderId;
