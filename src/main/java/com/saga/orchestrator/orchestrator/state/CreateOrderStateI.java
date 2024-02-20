@@ -20,16 +20,20 @@ public class CreateOrderStateI implements IOrderState {
             issue.getOrder().setCodPedido(codPedido);
             if ("SUCCESS".equals(mediator.getStatus("ORDER").getMessage())) {
                 orderState.setState(new StockState());
+            }else{
+//                orderState.setState(new CreateOrderStateI());
+                this.prevState(orderState, issue, validaPrev);
+
             }
         }
     }
 
     public void prevState(OrderState orderState, Issue issue,boolean validaPrev) {
+        validaPrev = false;
         try {
             OrderServices orderServices = new OrderServices();
             orderServices.CancelOrder(issue.getOrder().getCodPedido());
             orderState.setState(new CreateOrderStateI());
-            validaPrev = false;
         }
         catch (Exception e){
             logger.info(e.getMessage());

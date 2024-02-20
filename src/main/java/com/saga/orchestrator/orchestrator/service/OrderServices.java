@@ -119,6 +119,10 @@ public class OrderServices {
             mediator.getNext(FAIL_MSG, SERVICE, dateTime);
             logger.info(e.getMessage() + "Caiuu aquii");
             return null;
+        }catch (Exception e){
+            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            logger.info(e.getMessage() + "Caiuu aquii");
+            return null;
         }
 
     }
