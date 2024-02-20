@@ -14,7 +14,7 @@ public class CreateOrderStateI implements IOrderState {
 
     @Override
     public void next(OrderState orderState, Issue issue, boolean validaPrev) {
-        if(validaPrev) {
+        if(orderState.isValidaPrev()) {
             OrderServices orderServices = new OrderServices();
             String codPedido = orderServices.CreateOrder(issue.getOrder());
             issue.getOrder().setCodPedido(codPedido);
@@ -29,7 +29,7 @@ public class CreateOrderStateI implements IOrderState {
     }
 
     public void prevState(OrderState orderState, Issue issue,boolean validaPrev) {
-        validaPrev = false;
+        orderState.setValidaPrev(false);
         try {
             OrderServices orderServices = new OrderServices();
             orderServices.CancelOrder(issue.getOrder().getCodPedido());

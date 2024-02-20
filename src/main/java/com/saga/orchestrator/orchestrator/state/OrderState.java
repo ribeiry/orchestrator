@@ -7,6 +7,15 @@ public class OrderState {
 
     private  boolean validaPrev = true;
     private  Issue issue = new Issue();
+
+    public boolean isValidaPrev() {
+        return validaPrev;
+    }
+
+    public void setValidaPrev(boolean validaPrev) {
+        this.validaPrev = validaPrev;
+    }
+
     public IOrderState getState() {
         return state;
     }
