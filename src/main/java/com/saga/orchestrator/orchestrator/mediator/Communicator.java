@@ -5,6 +5,7 @@ import com.saga.orchestrator.orchestrator.model.CommunicatorDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.exceptions.JedisException;
 
 import java.time.LocalDateTime;
 import java.time.Year;
@@ -43,9 +44,17 @@ public class Communicator implements  ICommunicator{
             hash.put("service", service);
             hash.put("message", message);
             hash.put("DateTime", String.valueOf(data));
+            try {
+                redis.hset(hashKey, hash);
+                logger.info(redis.hgetAll(hashKey).toString());
+            }
+            catch (JedisException e){
+                logger.error(e.getMessage());
+            }
+            catch (Exception e){
+                logger.error(e.getMessage());
 
-            redis.hset(hashKey, hash);
-            logger.info(redis.hgetAll(hashKey).toString());
+            }
             return false;
         }
     }

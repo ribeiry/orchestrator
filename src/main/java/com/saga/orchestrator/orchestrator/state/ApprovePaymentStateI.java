@@ -13,6 +13,7 @@ import com.saga.orchestrator.orchestrator.service.TransportServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class ApprovePaymentStateI implements IOrderState {
@@ -20,40 +21,53 @@ public class ApprovePaymentStateI implements IOrderState {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    public void next(OrderState orderState, Issue issue, boolean validaPrev) {
+    public void next(OrderState orderState, Issue issue) {
 
-        if(validaPrev) {
+        if(orderState.isValidaPrev()) {
             TransportServices transportServices = new TransportServices();
             //TODO Tratar a excecao
-            Double transportValue = Double.parseDouble(transportServices.calculateTransport(issue));
-            Double somaProduct = (double) 0;
-            //Adiciona ao valor do pedido
-            List<Product> produtos = issue.getOrder().getProdutos();
-            for (Product produto : produtos) {
-                somaProduct += produto.getPreco().doubleValue();
+            try {
+                Double transportValue = Double.parseDouble(transportServices.calculateTransport(issue));
+                Double somaProduct = (double) 0;
+                //Adiciona ao valor do pedido
+                List<Product> produtos = issue.getOrder().getProdutos();
+                for (Product produto : produtos) {
+                    somaProduct += produto.getPreco().doubleValue();
+
+                }
+
+                Double totalValue = transportValue + somaProduct;
+                issue.getPayment().setPaymentValue(totalValue);
+
+                //Efetua pgamento do pedido
+                PaymentServices paymentServices = new PaymentServices();
+                paymentServices.payOrder(issue);
+                if ("SUCCESS".equals(mediator.getStatus("PAYMENTS").getMessage())) {
+                    orderState.setState(new TransportStateI());
+                }
+                else {
+                    this.prevState(orderState,issue);
+                }
+            }
+            catch (Exception e ){
+                logger.error(e.getMessage());
+                mediator.getNext("FAIL", "PAYMENTS", LocalDateTime.now());
+                orderState.setValidaPrev(false);
             }
 
-            Double totalValue = transportValue + somaProduct;
-            issue.getPayment().setPaymentValue(totalValue);
-
-            //Efetua pgamento do pedido
-            PaymentServices paymentServices = new PaymentServices();
-            paymentServices.payOrder(issue);
-            if ("SUCCESS".equals(mediator.getStatus("PAYMENTS").getMessage())) {
-                orderState.setState(new TransportStateI());
-            }
         }
     }
 
 
-    public void prevState(OrderState orderState, Issue issue, boolean validaPrev) {
+    public void prevState(OrderState orderState, Issue issue) {
         try {
+            orderState.setValidaPrev(false);
             PaymentServices paymentServices = new PaymentServices();
             orderState.setState(new StockState());
             paymentServices.cancelPayment(issue.getPayment().getPaymentId());
         }
         catch (Exception e){
-            logger.info(e.getMessage());
+            logger.error(e.getMessage());
         }
     }
 

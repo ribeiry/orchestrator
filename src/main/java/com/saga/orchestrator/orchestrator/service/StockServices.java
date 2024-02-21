@@ -72,7 +72,7 @@ public class StockServices {
         catch (final  HttpClientErrorException e){
 
             if(HttpStatus.NOT_FOUND.equals(e.getStatusCode())){
-                logger.info(e.getMessage() + "    caiu aquiiii");
+                logger.error(e.getMessage() + "    caiu aquiiii");
                 mediator.getNext(FAIL_MSG,SERVICE,dateTime);
             }
         }
@@ -109,11 +109,11 @@ public class StockServices {
 
             if(HttpStatus.NOT_FOUND.equals(e.getStatusCode())){
                 logger.info("==== Nāo há quantidade suficiente de produtos ===");
-                logger.info(e.getMessage() );
+                logger.error(e.getMessage() );
                 mediator.getNext(FAIL_MSG,SERVICE,dateTime );
             }
             else{
-                logger.info(e.getMessage());
+                logger.error(e.getMessage());
 
             }
         }
@@ -154,11 +154,11 @@ public class StockServices {
         catch (final HttpClientErrorException e ){
             if(HttpStatus.NOT_FOUND.equals(e.getStatusCode())){
                 logger.info("Nāo tem o produto informado");
-                logger.info(e.getMessage());
+                logger.error(e.getMessage());
                 mediator.getNext("FAIL",SERVICE,dateTime );
             }
             else{
-                logger.info(e.getMessage());
+                logger.error(e.getMessage());
 
             }
 

@@ -36,11 +36,6 @@ public class TransportServices {
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
         logger.info("Chamando o método calcula transport");
-
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//
-//        HttpEntity<Transport> request = new HttpEntity<>(transportSendRequest, headers);
         try {
             //precisa testar com o método de pé
             String resultCalculate = restTemplate.getForObject(apiUrl, String.class);
@@ -48,9 +43,14 @@ public class TransportServices {
             mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
             return resultCalculate;
 
-        } catch (HttpClientErrorException e) {
+        }
+        catch (HttpClientErrorException e) {
             mediator.getNext(FAIL_MSG, SERVICE, dateTime);
-            logger.info(e.getMessage()  + "  Caiuu aquiii");
+            logger.error(e.getMessage());
+        }
+        catch (Exception e){
+            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            logger.error(e.getMessage()  + "  Caiuu aquiii");
         }
 
         return null;
@@ -77,7 +77,7 @@ public class TransportServices {
 
         } catch (HttpClientErrorException e) {
             mediator.getNext(FAIL_MSG, SERVICE, dateTime);
-            logger.info(e.getMessage() + "  Caiuu aquiii");
+            logger.error(e.getMessage() + "  Caiuu aquiii");
         }
 
     }
@@ -102,7 +102,7 @@ public class TransportServices {
 
         } catch (HttpClientErrorException e) {
             mediator.getNext(FAIL_MSG, SERVICE, dateTime);
-            logger.info(e.getMessage() + "  Caiuu aquiii");
+            logger.error(e.getMessage() + "  Caiuu aquiii");
         }
 
     }

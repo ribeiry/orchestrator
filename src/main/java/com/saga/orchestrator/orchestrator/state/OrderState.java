@@ -24,12 +24,12 @@ public class OrderState {
         this.state = state;
     }
 
-    public  void nextState(Issue issue, boolean validaPrev) {
-        state.next(this, issue, validaPrev);
+    public  void nextState(Issue issue) {
+        state.next(this, issue);
     }
 
-    public  void prevState(OrderState state, Issue issue, boolean validaPrev){
-        state.prevState(this, issue, validaPrev);
+    public  void prevState(OrderState state, Issue issue){
+        state.prevState(this, issue);
     }
 
     public String printStatus() {

@@ -15,17 +15,21 @@ import java.util.List;
 public class TransportStateI implements IOrderState {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    @Override
-    public void next(OrderState orderState, Issue issue, boolean validaPrev) {
-        if(validaPrev) {
-            TransportServices transportServices = new TransportServices();
-            transportServices.sendToTransport(issue);
-           logger.info("O pedido já saiu para entrega");
 
+    private Communicator mediator = new Communicator();
+    @Override
+    public void next(OrderState orderState, Issue issue) {
+
+        TransportServices transportServices = new TransportServices();
+        transportServices.sendToTransport(issue);
+        logger.info("O pedido já saiu para entrega");
+        if ("FAIL".equals(mediator.getStatus("ORDER").getMessage())) {
+           this.prevState(orderState,issue);
         }
     }
 
-    public void prevState(OrderState orderState, Issue issue, boolean validaPrev) {
+    public void prevState(OrderState orderState, Issue issue) {
+        orderState.setValidaPrev(false);
         TransportServices transportServices = new TransportServices();
         transportServices.cancelTransport(issue.getTransport().getTransport_id());
         orderState.setState(new ApprovePaymentStateI());

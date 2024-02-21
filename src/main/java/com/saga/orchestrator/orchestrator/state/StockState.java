@@ -16,8 +16,8 @@ public class StockState implements  IOrderState{
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    public void next(OrderState orderState, Issue issue, boolean validaPrev) {
-        if(validaPrev) {
+    public void next(OrderState orderState, Issue issue) {
+        if(orderState.isValidaPrev()) {
             StockServices stockServices = new StockServices();
             List<Product> products = issue.getOrder().getProdutos();
             for (Product product : products) {
@@ -29,10 +29,14 @@ public class StockState implements  IOrderState{
             if ("SUCCESS".equals(mediator.getStatus("STOCK").getMessage())) {
                 orderState.setState(new ApprovePaymentStateI());
             }
+            else{
+                this.prevState(orderState,issue);
+            }
         }
     }
 
-    public void prevState(OrderState orderState, Issue issue, boolean validaPrev) {
+    public void prevState(OrderState orderState, Issue issue) {
+        orderState.setValidaPrev(false);
         try {
             StockServices stockServices = new StockServices();
             orderState.setState(new CreateOrderStateI());
@@ -40,10 +44,9 @@ public class StockState implements  IOrderState{
             for (Product product : products) {
                 stockServices.addAProduct(product.getIdProduto(), product.getQuantidade());
             }
-            validaPrev = false;
         }
         catch (Exception e){
-            logger.info(e.getMessage());
+            logger.error(e.getMessage());
         }
     }
 

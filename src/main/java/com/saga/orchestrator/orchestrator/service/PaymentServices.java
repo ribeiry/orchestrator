@@ -49,10 +49,16 @@ public class PaymentServices {
             logger.info("O id do pagamento é  " + responseSendPayment);
             mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
 
-        } catch (HttpClientErrorException e) {
-            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
-            logger.info(e.getMessage() + "  Caiuu aquiii");
         }
+        catch (HttpClientErrorException e) {
+            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            logger.error(e.getMessage());
+        }
+        catch (Exception e ){
+            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            logger.error(e.getMessage());
+        }
+
 
     }
 

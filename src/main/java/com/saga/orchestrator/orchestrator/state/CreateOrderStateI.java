@@ -13,22 +13,22 @@ public class CreateOrderStateI implements IOrderState {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    public void next(OrderState orderState, Issue issue, boolean validaPrev) {
+    public void next(OrderState orderState, Issue issue) {
         if(orderState.isValidaPrev()) {
             OrderServices orderServices = new OrderServices();
             String codPedido = orderServices.CreateOrder(issue.getOrder());
             issue.getOrder().setCodPedido(codPedido);
             if ("SUCCESS".equals(mediator.getStatus("ORDER").getMessage())) {
                 orderState.setState(new StockState());
-            }else{
-//                orderState.setState(new CreateOrderStateI());
-                this.prevState(orderState, issue, validaPrev);
+            }
+            else{
+                this.prevState(orderState, issue);
 
             }
         }
     }
 
-    public void prevState(OrderState orderState, Issue issue,boolean validaPrev) {
+    public void prevState(OrderState orderState, Issue issue) {
         orderState.setValidaPrev(false);
         try {
             OrderServices orderServices = new OrderServices();
@@ -36,7 +36,7 @@ public class CreateOrderStateI implements IOrderState {
             orderState.setState(new CreateOrderStateI());
         }
         catch (Exception e){
-            logger.info(e.getMessage());
+            logger.error(e.getMessage());
         }
     }
 

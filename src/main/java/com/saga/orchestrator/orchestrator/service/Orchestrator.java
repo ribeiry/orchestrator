@@ -23,28 +23,28 @@ public class Orchestrator {
        String cod_pedido = null;
 
        OrderState orderState = new OrderState();
-       boolean validaPrev = true;
+
 
        //Cria pedido
-       orderState.nextState(issue, validaPrev);
+       orderState.nextState(issue);
        logger.info("Getting first state...");
        logger.info(orderState.printStatus());
 
        //Separa o Estoque
-       orderState.nextState(issue, validaPrev);
+       orderState.nextState(issue);
         logger.info("Getting second state...");
         logger.info(orderState.printStatus());
 
 
        //Envia para pagamento
-        orderState.nextState(issue, validaPrev);
+        orderState.nextState(issue);
         logger.info("Getting third state...");
         logger.info(orderState.printStatus());
 
         //Envia para Transport
         if(orderState.isValidaPrev()) {
             if ("SUCCESS".equals(mediator.getStatus("PAYMENTS").getMessage())) {
-                orderState.nextState(issue, validaPrev);
+                orderState.nextState(issue);
                 logger.info("Getting fourth state...");
                 logger.info(orderState.printStatus());
 

@@ -117,11 +117,12 @@ public class OrderServices {
         catch (HttpClientErrorException e){
 
             mediator.getNext(FAIL_MSG, SERVICE, dateTime);
-            logger.info(e.getMessage() + "Caiuu aquii");
+            logger.error(e.getMessage() + "Caiuu aquii");
             return null;
-        }catch (Exception e){
+        }
+        catch (Exception e){
             mediator.getNext(FAIL_MSG, SERVICE, dateTime);
-            logger.info(e.getMessage() + "Caiuu aquii");
+            logger.error(e.getMessage() + "Caiuu aquii");
             return null;
         }
 
@@ -152,11 +153,11 @@ public class OrderServices {
         catch (final HttpClientErrorException e) {
 
             if(HttpStatus.NOT_FOUND.equals(e.getStatusCode())){
-                logger.info(e.getMessage() + "   caiu aquiiii");
+                logger.error(e.getMessage() + "   caiu aquiiii");
                 mediator.getNext(FAIL_MSG,SERVICE,dateTime );
             }
             else{
-                logger.info(e.getMessage());
+                logger.error(e.getMessage());
 
             }
         }
