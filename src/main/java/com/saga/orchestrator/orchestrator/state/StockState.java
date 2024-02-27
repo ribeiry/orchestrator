@@ -33,13 +33,16 @@ public class StockState implements  IOrderState{
                 this.prevState(orderState,issue);
             }
         }
+        else{
+            this.prevState(orderState,issue);
+        }
     }
 
     public void prevState(OrderState orderState, Issue issue) {
         orderState.setValidaPrev(false);
+        orderState.setState(new CreateOrderStateI());
         try {
             StockServices stockServices = new StockServices();
-            orderState.setState(new CreateOrderStateI());
             List<Product> products = issue.getOrder().getProdutos();
             for (Product product : products) {
                 stockServices.addAProduct(product.getIdProduto(), product.getQuantidade());

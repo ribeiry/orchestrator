@@ -55,15 +55,17 @@ public class ApprovePaymentStateI implements IOrderState {
                 orderState.setValidaPrev(false);
             }
 
+        }else{
+            this.prevState(orderState,issue);
         }
     }
 
 
     public void prevState(OrderState orderState, Issue issue) {
+        orderState.setValidaPrev(false);
+        orderState.setState(new StockState());
         try {
-            orderState.setValidaPrev(false);
             PaymentServices paymentServices = new PaymentServices();
-            orderState.setState(new StockState());
             paymentServices.cancelPayment(issue.getPayment().getPaymentId());
         }
         catch (Exception e){

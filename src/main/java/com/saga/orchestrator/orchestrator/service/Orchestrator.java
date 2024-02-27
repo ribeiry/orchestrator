@@ -41,18 +41,22 @@ public class Orchestrator {
         logger.info("Getting third state...");
         logger.info(orderState.printStatus());
 
-        //Envia para Transport
-        if(orderState.isValidaPrev()) {
-            if ("SUCCESS".equals(mediator.getStatus("PAYMENTS").getMessage())) {
+        if ("SUCCESS".equals(mediator.getStatus("PAYMENTS").getMessage())) {
                 orderState.nextState(issue);
                 logger.info("Getting fourth state...");
                 logger.info(orderState.printStatus());
 
                 cod_pedido = issue.getOrder().getCodPedido();
-            }
-        }
-        else {
-            cod_pedido = "";
+        }else {
+            //reverte
+            orderState.nextState(issue);
+
+            //reverte
+            orderState.nextState(issue);
+
+            //reverte
+            orderState.nextState(issue);
+
         }
        return cod_pedido;
     }

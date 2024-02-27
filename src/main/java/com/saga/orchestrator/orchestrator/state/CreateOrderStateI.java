@@ -26,6 +26,9 @@ public class CreateOrderStateI implements IOrderState {
 
             }
         }
+        else {
+            this.prevState(orderState,issue);
+        }
     }
 
     public void prevState(OrderState orderState, Issue issue) {
