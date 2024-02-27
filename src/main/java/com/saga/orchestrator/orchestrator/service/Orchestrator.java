@@ -15,10 +15,14 @@ public class Orchestrator {
     //TODO: para a proxima requisicao.
     //TODO: ->>> 1º Gera Pedido  & Retira do Estoque -->> 2º Calcula Frete --> 3º Pagamento (calcula soma produtos + frete) --> 5º Envia produto
 
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private Communicator mediator = new Communicator();
 
     public String callFunctions(Issue issue) {
+
+
+        //TODO: Inserir um controle While
 
        String cod_pedido = null;
 
