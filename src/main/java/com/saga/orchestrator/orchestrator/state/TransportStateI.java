@@ -19,20 +19,32 @@ public class TransportStateI implements IOrderState {
     private Communicator mediator = new Communicator();
     @Override
     public void next(OrderState orderState, Issue issue) {
-
-        TransportServices transportServices = new TransportServices();
-        transportServices.sendToTransport(issue);
-        logger.info("O pedido já saiu para entrega");
-        if ("FAIL".equals(mediator.getStatus("ORDER").getMessage())) {
-           this.prevState(orderState,issue);
+        if(orderState.isValidaPrev()) {
+            TransportServices transportServices = new TransportServices();
+            transportServices.sendToTransport(issue);
+            logger.info("O pedido já saiu para entrega");
+            if ("FAIL".equals(mediator.getStatus("ORDER").getMessage())) {
+                this.prevState(orderState, issue);
+            }
+            else {
+                orderState.setState(null);
+            }
+        }
+        else{
+            this.prevState(orderState,issue);
         }
     }
 
     public void prevState(OrderState orderState, Issue issue) {
-        orderState.setValidaPrev(false);
-        TransportServices transportServices = new TransportServices();
-        transportServices.cancelTransport(issue.getTransport().getTransport_id());
-        orderState.setState(new ApprovePaymentStateI());
+        try {
+            orderState.setValidaPrev(false);
+            TransportServices transportServices = new TransportServices();
+            transportServices.cancelTransport(issue.getTransport().getTransport_id());
+            orderState.setState(new ApprovePaymentStateI());
+        }
+        catch (Exception e){
+            logger.info(e.getMessage());
+        }
     }
 
     @Override

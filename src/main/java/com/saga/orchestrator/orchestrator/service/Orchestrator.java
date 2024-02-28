@@ -24,44 +24,21 @@ public class Orchestrator {
 
         //TODO: Inserir um controle While
 
-       String cod_pedido = null;
+       String cod_pedido = "";
 
        OrderState orderState = new OrderState();
-
-
-       //Cria pedido
-       orderState.nextState(issue);
-       logger.info("Getting first state...");
-       logger.info(orderState.printStatus());
-
-       //Separa o Estoque
-       orderState.nextState(issue);
-        logger.info("Getting second state...");
-        logger.info(orderState.printStatus());
-
-
-       //Envia para pagamento
-        orderState.nextState(issue);
-        logger.info("Getting third state...");
-        logger.info(orderState.printStatus());
-
-        if ("SUCCESS".equals(mediator.getStatus("PAYMENTS").getMessage())) {
-                orderState.nextState(issue);
-                logger.info("Getting fourth state...");
-                logger.info(orderState.printStatus());
-
-                cod_pedido = issue.getOrder().getCodPedido();
-        }else {
-            //reverte
-            orderState.nextState(issue);
-
-            //reverte
-            orderState.nextState(issue);
-
-            //reverte
-            orderState.nextState(issue);
-
-        }
+       int i = 0;
+       while (orderState.getState() != null){
+           logger.info("Getting % state", i );
+           logger.info(orderState.printStatus());
+           orderState.nextState(issue);
+       }
+       if(issue.getOrder().getCodPedido() != null){
+           if(!issue.getOrder().getCodPedido().isEmpty() ||
+                !issue.getOrder().getCodPedido().isBlank()){
+            cod_pedido = issue.getOrder().getCodPedido();
+           }
+       }
        return cod_pedido;
     }
 }
