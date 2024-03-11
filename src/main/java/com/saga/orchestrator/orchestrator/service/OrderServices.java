@@ -3,6 +3,7 @@ package com.saga.orchestrator.orchestrator.service;
 
 import com.saga.orchestrator.orchestrator.model.Order;
 import com.saga.orchestrator.orchestrator.model.OrderDto;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import com.saga.orchestrator.orchestrator.mediator.Communicator;
 import org.slf4j.Logger;
@@ -24,13 +25,17 @@ public class OrderServices {
 
     private  final String apiUrl = "http://localhost:8081/orders";
 
-   // @Value("${server.url.order-service}")
-   // private String apiUrl ;
+    @Value("${server.url.order-service}")
+   private String apiUrls ;
 
 
     private final  String FAIL_MSG = "FAIL";
 
     private Communicator mediator = new Communicator();
+
+    public OrderServices (){
+
+    }
 
     public void getAllOrders() throws HttpClientErrorException {
         OrderDto orderRequest = new OrderDto();
