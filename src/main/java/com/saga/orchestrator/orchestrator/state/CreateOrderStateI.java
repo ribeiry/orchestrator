@@ -37,7 +37,7 @@ public class CreateOrderStateI implements IOrderState {
             OrderServices orderServices = new OrderServices();
             orderState.setState(null);
             orderServices.CancelOrder(issue.getOrder().getCodPedido());
-
+            issue.getOrder().setCodPedido(null);
         }
         catch (Exception e){
             logger.error(e.getMessage());
