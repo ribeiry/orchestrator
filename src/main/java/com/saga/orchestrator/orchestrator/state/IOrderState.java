@@ -4,9 +4,9 @@ import com.saga.orchestrator.orchestrator.model.Issue;
 
 public interface IOrderState {
 
-   void next(OrderState orderState, Issue issue);
+   void nextOrderState(State state, Issue issue);
 
-    String printStatus();
+    String printStatusOrderState();
 
-    void prevState(OrderState state, Issue issue);
+    void prevOrderState(State state, Issue issue);
 }

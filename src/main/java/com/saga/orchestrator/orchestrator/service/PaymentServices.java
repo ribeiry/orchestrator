@@ -1,6 +1,6 @@
 package com.saga.orchestrator.orchestrator.service;
 
-import com.saga.orchestrator.orchestrator.mediator.Communicator;
+import com.saga.orchestrator.orchestrator.mediator.Mediator;
 import com.saga.orchestrator.orchestrator.model.Issue;
 import com.saga.orchestrator.orchestrator.model.Payment;
 import org.slf4j.Logger;
@@ -22,7 +22,7 @@ public class PaymentServices {
     private final String FAIL_MSG = "FAIL";
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private Communicator mediator = new Communicator();
+    private Mediator mediator = new Mediator();
 
     private final String SERVICE = "PAYMENTS";
     private final String SUCESS_MSG = "SUCCESS";
@@ -47,15 +47,17 @@ public class PaymentServices {
             List<Payment> payments = new ArrayList<>();
             issue.getPayment().setPaymentId(responseSendPayment);
             logger.info("O id do pagamento é  " + responseSendPayment);
-            mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(SUCESS_MSG, SERVICE, dateTime);
 
         }
         catch (HttpClientErrorException e) {
-            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveOrechestratorResult(issue.getOrder().getCodPedido(), e.getStatusCode().value(), SERVICE + "Indisponível", e.getCause());
             logger.error(e.getMessage());
         }
         catch (Exception e ){
-            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveOrechestratorResult(issue.getOrder().getCodPedido(), 503, SERVICE + "Exceção não tratada", e.getCause());
             logger.error(e.getMessage());
         }
 
@@ -77,10 +79,10 @@ public class PaymentServices {
         try {
             String response = restTemplate.postForObject(apiUrl, request, String.class);
             logger.info("Pedido cancelado " + response);
-            mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(SUCESS_MSG, SERVICE, dateTime);
 
         } catch (HttpClientErrorException e) {
-            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
             logger.info(e.getMessage() + "  Caiuu aquiii");
         }
     }

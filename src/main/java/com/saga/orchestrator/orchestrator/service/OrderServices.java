@@ -1,11 +1,11 @@
 package com.saga.orchestrator.orchestrator.service;
 
 
+import com.saga.orchestrator.orchestrator.mediator.Mediator;
 import com.saga.orchestrator.orchestrator.model.Order;
 import com.saga.orchestrator.orchestrator.model.OrderDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import com.saga.orchestrator.orchestrator.mediator.Communicator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -31,7 +31,7 @@ public class OrderServices {
 
     private final  String FAIL_MSG = "FAIL";
 
-    private Communicator mediator = new Communicator();
+    private Mediator mediator = new Mediator();
 
     public OrderServices (){
 
@@ -52,7 +52,7 @@ public class OrderServices {
             List<OrderDto> order = new ArrayList<>();
             order = response.getBody();
             logger.info("O retorno de pedidos é " + order);
-            mediator.getNext(SUCESS_MSG,SERVICE,dateTime);
+            mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE,dateTime);
             for (int i = 0; i < order.size(); i++) {
                 Object pedido = order.get(i);
                 if (pedido instanceof LinkedHashMap<?, ?>) {
@@ -68,7 +68,7 @@ public class OrderServices {
             }
         }
         catch (HttpClientErrorException e){
-            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
             logger.info(e.getMessage() + "  Caiuu aquiii");
         }
     }
@@ -90,11 +90,11 @@ public class OrderServices {
             logger.info("O retorno de pedidos é {}" ,order);
 
             logger.info(String.valueOf(order));
-            mediator.getNext(SUCESS_MSG,SERVICE,dateTime );
+            mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE,dateTime );
 
         }
         catch (HttpClientErrorException e){
-            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
             logger.info(e.getMessage() + "  Caiuu aquiii");
         }
 
@@ -116,17 +116,18 @@ public class OrderServices {
             response = response.replaceAll("\"", "");
             logger.info("ID do pedido criado retornado {}", response);
 
-            mediator.getNext(SUCESS_MSG,SERVICE,dateTime);
+            mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE,dateTime);
             return  response;
         }
         catch (HttpClientErrorException e){
-
-            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveOrechestratorResult(null, e.getStatusCode().value(), SERVICE + "Indisponível", e.getCause());
             logger.error(e.getMessage() + "Caiuu aquii");
             return null;
         }
         catch (Exception e){
-            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveOrechestratorResult(null, 503, SERVICE + "Exceção não tratada", e.getCause());
             logger.error(e.getMessage() + "Caiuu aquii");
             return null;
         }
@@ -152,14 +153,14 @@ public class OrderServices {
             ResponseEntity<OrderDto> response = restTemplate.exchange(url , HttpMethod.PUT, requestEntity,  OrderDto.class);
             orderDto = response.getBody();
             HttpStatusCode resp = response.getStatusCode();
-            mediator.getNext(SUCESS_MSG,SERVICE,dateTime );
+            mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE,dateTime );
             logger.info("Retorno " +  String.valueOf(orderDto));
         }
         catch (final HttpClientErrorException e) {
 
             if(HttpStatus.NOT_FOUND.equals(e.getStatusCode())){
                 logger.error(e.getMessage() + "   caiu aquiiii");
-                mediator.getNext(FAIL_MSG,SERVICE,dateTime );
+                mediator.saveMicroserviceResult(FAIL_MSG,SERVICE,dateTime );
             }
             else{
                 logger.error(e.getMessage());

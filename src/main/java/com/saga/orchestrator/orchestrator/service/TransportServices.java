@@ -1,7 +1,7 @@
 package com.saga.orchestrator.orchestrator.service;
 
 
-import com.saga.orchestrator.orchestrator.mediator.Communicator;
+import com.saga.orchestrator.orchestrator.mediator.Mediator;
 import com.saga.orchestrator.orchestrator.model.Issue;
 import com.saga.orchestrator.orchestrator.model.Transport;
 import com.saga.orchestrator.orchestrator.model.TransportDto;
@@ -23,7 +23,7 @@ public class TransportServices {
     private final String FAIL_MSG = "FAIL";
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private Communicator mediator = new Communicator();
+    private Mediator mediator = new Mediator();
 
     private final String SERVICE = "TRANSPORT";
     private final String SUCESS_MSG = "SUCCESS";
@@ -40,16 +40,16 @@ public class TransportServices {
             //precisa testar com o método de pé
             String resultCalculate = restTemplate.getForObject(apiUrl, String.class);
             logger.info("O valor do transport é  {} ", resultCalculate);
-            mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(SUCESS_MSG, SERVICE, dateTime);
             return resultCalculate;
 
         }
         catch (HttpClientErrorException e) {
-            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
             logger.error(e.getMessage());
         }
         catch (Exception e){
-            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
             logger.error(e.getMessage()  + "  Caiuu aquiii");
         }
 
@@ -73,11 +73,16 @@ public class TransportServices {
             String responseSendTransport = restTemplate.postForObject(apiUrl, request, String.class);
             List<Transport> transport = new ArrayList<>();
             logger.info("O id do transport é  {} ", responseSendTransport);
-            mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(SUCESS_MSG, SERVICE, dateTime);
 
         } catch (HttpClientErrorException e) {
-            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveOrechestratorResult(issue.getOrder().getCodPedido(), e.getStatusCode().value(), SERVICE + "Indisponível", e.getCause());
             logger.error(e.getMessage() + "  Caiuu aquiii");
+        }catch (Exception e){
+            mediator.saveMicroserviceResult(FAIL_MSG,SERVICE,dateTime );
+            mediator.saveOrechestratorResult(issue.getOrder().getCodPedido(), 503, SERVICE + "Exceção não tratada", e.getCause());
+            logger.error(e.getMessage());
         }
 
     }
@@ -98,11 +103,15 @@ public class TransportServices {
         try {
             String response = restTemplate.postForObject(apiUrl, request, String.class);
             logger.info("Pedido canecelado {} ", response);
-            mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(SUCESS_MSG, SERVICE, dateTime);
+
 
         } catch (HttpClientErrorException e) {
-            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
             logger.error(e.getMessage() + "  Caiuu aquiii");
+        } catch (Exception e){
+            mediator.saveMicroserviceResult(FAIL_MSG,SERVICE,dateTime );
+            logger.error(e.getMessage());
         }
 
     }

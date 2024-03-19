@@ -2,8 +2,8 @@ package com.saga.orchestrator.orchestrator.state;
 
 import com.saga.orchestrator.orchestrator.model.Issue;
 
-public class OrderState {
-    private IOrderState state = new CreateOrderStateI();
+public class State {
+    private IOrderState orderState = new OrderStateI();
 
     private  boolean validaPrev = true;
     private  Issue issue = new Issue();
@@ -16,23 +16,23 @@ public class OrderState {
         this.validaPrev = validaPrev;
     }
 
-    public IOrderState getState() {
-        return state;
+    public IOrderState getOrderState() {
+        return orderState;
     }
 
-    public void setState(IOrderState state) {
-        this.state = state;
+    public void setOrderState(IOrderState orderState) {
+        this.orderState = orderState;
     }
 
     public  void nextState(Issue issue) {
-        state.next(this, issue);
+        orderState.nextOrderState(this, issue);
     }
 
-    public  void prevState(OrderState state, Issue issue){
+    public  void prevState(State state, Issue issue){
         state.prevState(this, issue);
     }
 
-    public String printStatus() {
-        return state.printStatus();
+    public String printStatusState() {
+        return orderState.printStatusOrderState();
     }
 }

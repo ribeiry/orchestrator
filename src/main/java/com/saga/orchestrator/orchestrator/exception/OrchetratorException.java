@@ -6,9 +6,12 @@ public class OrchetratorException extends  Exception{
 
     private String httpstatusmessage;
 
-    public OrchetratorException(int httpstatuscode, String httpstatusmessage){
+    Throwable e;
+
+    public OrchetratorException(int httpstatuscode, String httpstatusmessage, Throwable e){
         super(httpstatusmessage);
         this.httpstatuscode = httpstatuscode;
+        this.e = e;
     }
 
     public int getHttpstatuscode() {
@@ -25,5 +28,13 @@ public class OrchetratorException extends  Exception{
 
     public void setHttpstatusmessage(String httpstatusmessage) {
         this.httpstatusmessage = httpstatusmessage;
+    }
+
+    public Throwable getE() {
+        return e;
+    }
+
+    public void setE(Throwable e) {
+        this.e = e;
     }
 }

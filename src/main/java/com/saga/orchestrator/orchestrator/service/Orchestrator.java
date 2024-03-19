@@ -1,8 +1,9 @@
 package com.saga.orchestrator.orchestrator.service;
 
-import com.saga.orchestrator.orchestrator.mediator.Communicator;
+import com.saga.orchestrator.orchestrator.mediator.Mediator;
 import com.saga.orchestrator.orchestrator.model.Issue;
-import com.saga.orchestrator.orchestrator.state.OrderState;
+import com.saga.orchestrator.orchestrator.model.OrchestratorResultDTO;
+import com.saga.orchestrator.orchestrator.state.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,29 +23,33 @@ public class Orchestrator {
 
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private Communicator mediator = new Communicator();
+    private Mediator mediator = new Mediator();
 
-    public String callFunctions(Issue issue) {
+    public OrchestratorResultDTO callFunctions(Issue issue) {
 
 
         //TODO: Inserir um controle While
 
-       String cod_pedido = "";
+//       String cod_pedido = "";
 
-       OrderState orderState = new OrderState();
+       State state = new State();
        int i = 0;
-       while (orderState.getState() != null){
+       while (state.getOrderState() != null){
            logger.info("Getting % state", i );
-           logger.info(orderState.printStatus());
-           orderState.nextState(issue);
+           logger.info(state.printStatusState());
+           state.nextState(issue);
        }
-       if(issue.getOrder().getCodPedido() != null){
-           if(!issue.getOrder().getCodPedido().isEmpty() ||
-                !issue.getOrder().getCodPedido().isBlank()){
-            cod_pedido = issue.getOrder().getCodPedido();
-           }
-       }
-       return cod_pedido;
+
+//        OrchestratorResultDTO orchestratorResultDTO = new OrchestratorResultDTO();
+
+       return mediator.getOrechestratorResult(issue.getOrder().getCodPedido());
+//       if(issue.getOrder().getCodPedido() != null){
+//           if(!issue.getOrder().getCodPedido().isEmpty() ||
+//                !issue.getOrder().getCodPedido().isBlank()){
+//            cod_pedido = issue.getOrder().getCodPedido();
+//           }
+//       }
+//       return cod_pedido;
     }
 }
 

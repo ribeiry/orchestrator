@@ -1,41 +1,41 @@
 package com.saga.orchestrator.orchestrator.state;
 
-import com.saga.orchestrator.orchestrator.mediator.Communicator;
+import com.saga.orchestrator.orchestrator.mediator.Mediator;
 import com.saga.orchestrator.orchestrator.model.Issue;
 import com.saga.orchestrator.orchestrator.service.OrderServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class CreateOrderStateI implements IOrderState {
+public class OrderStateI implements IOrderState {
 
-    private final Communicator mediator = new Communicator();
+    private final Mediator mediator = new Mediator();
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    public void next(OrderState orderState, Issue issue) {
-        if(orderState.isValidaPrev()) {
+    public void nextOrderState(State state, Issue issue) {
+        if(state.isValidaPrev()) {
             OrderServices orderServices = new OrderServices();
             String codPedido = orderServices.CreateOrder(issue.getOrder());
             issue.getOrder().setCodPedido(codPedido);
-            if ("SUCCESS".equals(mediator.getStatus("ORDER").getMessage())) {
-                orderState.setState(new StockState());
+            if ("SUCCESS".equals(mediator.getMicroserviceResult("ORDER").getMessage())) {
+                state.setOrderState(new StockState());
             }
             else{
-                this.prevState(orderState, issue);
+                this.prevOrderState(state, issue);
 
             }
         }
         else {
-            this.prevState(orderState,issue);
+            this.prevOrderState(state,issue);
         }
     }
 
-    public void prevState(OrderState orderState, Issue issue) {
-        orderState.setValidaPrev(false);
+    public void prevOrderState(State state, Issue issue) {
+        state.setValidaPrev(false);
         try {
             OrderServices orderServices = new OrderServices();
-            orderState.setState(null);
+            state.setOrderState(null);
             orderServices.CancelOrder(issue.getOrder().getCodPedido());
             issue.getOrder().setCodPedido(null);
         }
@@ -45,7 +45,7 @@ public class CreateOrderStateI implements IOrderState {
     }
 
     @Override
-    public String printStatus() {
+    public String printStatusOrderState() {
         return "O pedido tem produtos no estoque";
 
     }
