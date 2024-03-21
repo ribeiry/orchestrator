@@ -21,7 +21,7 @@ public class CreateOrderStateI implements IOrderState {
         if(orderState.isValidaPrev()) {
 
              orderServices = new  OrderServices();
-            String codPedido = orderServices.CreateOrder(issue.getOrder());
+            String codPedido = orderServices.createOrder(issue.getOrder());
             issue.getOrder().setCodPedido(codPedido);
             if ("SUCCESS".equals(mediator.getStatus("ORDER").getMessage())) {
                 orderState.setState(new StockState());
@@ -41,7 +41,7 @@ public class CreateOrderStateI implements IOrderState {
         try {
             OrderServices orderServices = new OrderServices();
             orderState.setState(null);
-            orderServices.CancelOrder(issue.getOrder().getCodPedido());
+            orderServices.cancelOrder(issue.getOrder().getCodPedido());
             issue.getOrder().setCodPedido("");
 
         }

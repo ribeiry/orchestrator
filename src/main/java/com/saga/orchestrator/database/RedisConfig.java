@@ -17,13 +17,17 @@ public class RedisConfig {
 
     public Jedis configurationRedis(String server, int port){
         JedisPool pool = new JedisPool(server, port);
-        try(Jedis jedis = pool.getResource()){
+        try{
+            Jedis jedis = pool.getResource();
             logger.info("Houve um sucesso a conectar com REDIS database");
             return jedis;
         }
         catch (JedisException e ){
             logger.info("Erro ao montar o Objeto do redis {} ", e.getMessage());
             return  null;
+        }
+        finally {
+            pool.close();
         }
 
     }

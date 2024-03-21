@@ -58,17 +58,15 @@ public class OrderServices {
             ResponseEntity<List> response = restTemplate.exchange(serverUrl, HttpMethod.GET, request, List.class);
             List<OrderDto> order = new ArrayList<>();
             order = response.getBody();
-            logger.info("O retorno de pedidos é " + order);
+            logger.info("O retorno de pedidos é {}", order);
             mediator.getNext(SUCESS_MSG,SERVICE,dateTime);
-            for (int i = 0; i < order.size(); i++) {
-                Object pedido = order.get(i);
+            for (Object pedido : order) {
                 if (pedido instanceof LinkedHashMap<?, ?>) {
                     LinkedHashMap<?, ?> linkedHashMap = (LinkedHashMap<?, ?>) pedido;
                     ArrayList<?> produtos = (ArrayList<?>) linkedHashMap.get("produtos");
                     if (produtos != null) {
                         for (Object produto : produtos) {
-                            System.out.println(produto);
-                            logger.info(produto.toString());
+                            logger.info("Objeto Produto é : {}",produto);
                         }
                     }
                 }
@@ -76,7 +74,7 @@ public class OrderServices {
         }
         catch (HttpClientErrorException e){
             mediator.getNext(FAIL_MSG, SERVICE, dateTime);
-            logger.info(e.getMessage() + "  Caiuu aquiii");
+            logger.info(e.getMessage());
         }
     }
 
@@ -96,18 +94,18 @@ public class OrderServices {
             OrderDto order = (OrderDto) response.getBody();
             logger.info("O retorno de pedidos é {}" ,order);
 
-            logger.info(String.valueOf(order));
+            logger.info("{}", order);
             mediator.getNext(SUCESS_MSG,SERVICE,dateTime );
 
         }
         catch (HttpClientErrorException e){
             mediator.getNext(FAIL_MSG, SERVICE, dateTime);
-            logger.info(e.getMessage() + "  Caiuu aquiii");
+            logger.info(e.getMessage());
         }
 
     }
 
-    public  String CreateOrder(Order order) throws HttpClientErrorException{
+    public  String createOrder(Order order) throws HttpClientErrorException{
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
 
@@ -120,17 +118,12 @@ public class OrderServices {
         try {
 
             String response =  restTemplate.exchange(serverUrl, HttpMethod.POST, entity,String.class).getBody();
+            assert response != null;
             response = response.replaceAll("\"", "");
             logger.info("ID do pedido criado retornado {}", response);
 
             mediator.getNext(SUCESS_MSG,SERVICE,dateTime);
             return  response;
-        }
-        catch (HttpClientErrorException e){
-
-            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
-            logger.error(e.getMessage() + "Caiuu aquii");
-            return null;
         }
         catch (Exception e){
             mediator.getNext(FAIL_MSG, SERVICE, dateTime);
@@ -140,14 +133,14 @@ public class OrderServices {
 
     }
 
-    public void CancelOrder(String id) throws  HttpClientErrorException{
+    public void cancelOrder(String id) throws  HttpClientErrorException{
         OrderDto orderDto = new OrderDto();
         RestTemplate restTemplate = new RestTemplate();
         String url = String.format("%s/%s", serverUrl,id);
         LocalDateTime dateTime = LocalDateTime.now();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
-        logger.info("Chamando o método putUpdateOrder() e cancelando o pedido id: ", id);
+        logger.info("Chamando o método putUpdateOrder() e cancelando o pedido id: {}", id);
 
         HttpHeaders headers = new HttpHeaders();
 
@@ -160,12 +153,12 @@ public class OrderServices {
             orderDto = response.getBody();
             HttpStatusCode resp = response.getStatusCode();
             mediator.getNext(SUCESS_MSG,SERVICE,dateTime );
-            logger.info("Retorno " +  String.valueOf(orderDto));
+            logger.info("Retorno {} {}",orderDto,resp);
         }
         catch (final HttpClientErrorException e) {
 
             if(HttpStatus.NOT_FOUND.equals(e.getStatusCode())){
-                logger.error(e.getMessage() + "   caiu aquiiii");
+                logger.error(e.getMessage());
                 mediator.getNext(FAIL_MSG,SERVICE,dateTime );
             }
             else{

@@ -2,7 +2,6 @@ package com.saga.orchestrator.state;
 
 import com.saga.orchestrator.mediator.Communicator;
 import com.saga.orchestrator.model.Issue;
-import com.saga.orchestrator.service.StockServices;
 import com.saga.orchestrator.service.TransportServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +10,7 @@ public class TransportStateI implements IOrderState {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private Communicator mediator = new Communicator();
+    private final Communicator mediator = new Communicator();
     @Override
     public void next(OrderState orderState, Issue issue) {
         if(orderState.isValidaPrev()) {

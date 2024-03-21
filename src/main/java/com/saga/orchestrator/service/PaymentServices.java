@@ -43,9 +43,6 @@ public class PaymentServices {
         }
     }
 
-
-
-    //método de pagamento
     public void payOrder(Issue issue) {
 
         String apiUrl = serverUrl + "/pay";
@@ -59,24 +56,17 @@ public class PaymentServices {
 
         HttpEntity<Payment> request = new HttpEntity<>(PaymenttSendRequest, headers);
         try {
-            //precisa testar com o método de pé
             String responseSendPayment = restTemplate.postForObject(apiUrl, request, String.class);
             List<Payment> payments = new ArrayList<>();
             issue.getPayment().setPaymentId(responseSendPayment);
-            logger.info("O id do pagamento é  " + responseSendPayment);
+            logger.info("O id do pagamento é  {}", responseSendPayment);
             mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
 
-        }
-        catch (HttpClientErrorException e) {
-            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
-            logger.error(e.getMessage());
         }
         catch (Exception e ){
             mediator.getNext(FAIL_MSG, SERVICE, dateTime);
             logger.error(e.getMessage());
         }
-
-
     }
 
 
@@ -93,12 +83,12 @@ public class PaymentServices {
         HttpEntity<String> request = new HttpEntity<>(idPayment, headers);
         try {
             String response = restTemplate.postForObject(apiUrl, request, String.class);
-            logger.info("Pedido cancelado " + response);
+            logger.info("Pedido cancelado {}", response);
             mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
 
         } catch (HttpClientErrorException e) {
             mediator.getNext(FAIL_MSG, SERVICE, dateTime);
-            logger.info(e.getMessage() + "  Caiuu aquiii");
+            logger.info(e.getMessage());
         }
     }
         

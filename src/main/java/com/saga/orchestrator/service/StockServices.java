@@ -24,15 +24,29 @@ public class StockServices {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final  String SERVICE = "STOCK";
+    private static final  String SERVICE = "STOCK";
 
     private static final  String SUCESS_MSG = "SUCCESS";
 
     private static final  String FAIL_MSG = "FAIL";
 
-    private Communicator mediator = new Communicator();
+    private final Communicator mediator = new Communicator();
 
     private  String serverUrl;
+
+    public StockServices() {
+        try {
+            String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+            String appConfigPath = rootPath + "application-server.properties";
+            Properties server = new Properties();
+            server.load(new FileInputStream(appConfigPath));
+            serverUrl = server.getProperty("url.server.stock-service");
+            logger.info(serverUrl);
+        }
+        catch (IOException ex){
+            logger.info(ex.getMessage());
+        }
+    }
 
     public void getAllStock() throws HttpClientErrorException{
         RestTemplate restTemplate = new RestTemplate();
@@ -41,16 +55,17 @@ public class StockServices {
         logger.info("Chamando o método getAllStock() e efetuando a leitura do estoque");
         try{
             StockDto[] stock = restTemplate.getForObject(url, StockDto[].class);
-            logger.info("O retorno do estoque é %s", stock.length);
-            for (int i = 0; i < stock.length; i++) {
-                logger.info(String.valueOf(stock[i]));
+            assert stock != null;
+            logger.info("O retorno do estoque é {}", stock.length);
+            for (StockDto stockDto : stock) {
+                logger.info("{}", stockDto);
             }
             mediator.getNext(SUCESS_MSG,SERVICE,dateTime );
         }
         catch (final  HttpClientErrorException e){
 
             if(HttpStatus.NOT_FOUND.equals(e.getStatusCode())){
-                logger.info(e.getMessage() + "   caiu aquiiii");
+                logger.info(e.getMessage());
                 mediator.getNext(FAIL_MSG,SERVICE,dateTime );
             }
             else{
@@ -68,30 +83,15 @@ public class StockServices {
         try{
             logger.info("Chamando o método getAProduct() e efetuando a leitura de um produto no estoque");
             StockDto product = restTemplate.getForObject(url, StockDto.class);
-            logger.info(String.valueOf(product));
+            logger.info("{}",product);
             mediator.getNext(SUCESS_MSG,SERVICE,dateTime);
         }
         catch (final  HttpClientErrorException e){
 
             if(HttpStatus.NOT_FOUND.equals(e.getStatusCode())){
-                logger.error(e.getMessage() + "    caiu aquiiii");
+                logger.error(e.getMessage());
                 mediator.getNext(FAIL_MSG,SERVICE,dateTime);
             }
-        }
-    }
-
-
-    public StockServices() {
-        try {
-            String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-            String appConfigPath = rootPath + "application-server.properties";
-            Properties server = new Properties();
-            server.load(new FileInputStream(appConfigPath));
-            serverUrl = server.getProperty("url.server.stock-service");
-            System.out.println(serverUrl);
-        }
-        catch (IOException ex){
-            logger.info(ex.getMessage());
         }
     }
 
@@ -118,6 +118,7 @@ public class StockServices {
             ResponseEntity<StockDto> response = restTemplate.exchange(url , HttpMethod.PUT, requestEntity,  StockDto.class);
             stock = response.getBody();
             HttpStatusCode resp = response.getStatusCode();
+            assert stock != null;
             stock.setId(id);
             mediator.getNext(SUCESS_MSG,SERVICE,dateTime );
             logger.info("Retorno  {}", stock);
@@ -164,9 +165,10 @@ public class StockServices {
         try{
             ResponseEntity<StockDto> response = restTemplate.exchange(url , HttpMethod.PUT, requestEntity,  StockDto.class);
             stock = response.getBody();
+            assert stock != null;
             stock.setId(id.split("/stock/")[1]);
             mediator.getNext("SUCESS",SERVICE,dateTime );
-            logger.info(String.valueOf(stock));
+            logger.info("{}",stock);
         }
         catch (final HttpClientErrorException e ){
             if(HttpStatus.NOT_FOUND.equals(e.getStatusCode())){

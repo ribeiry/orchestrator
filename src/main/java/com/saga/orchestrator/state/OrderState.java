@@ -6,7 +6,6 @@ public class OrderState {
     private IOrderState state = new CreateOrderStateI();
 
     private  boolean validaPrev = true;
-    private  Issue issue = new Issue();
 
     public boolean isValidaPrev() {
         return validaPrev;

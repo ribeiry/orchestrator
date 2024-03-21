@@ -40,7 +40,7 @@ public class TransportServices {
             Properties server = new Properties();
             server.load(new FileInputStream(appConfigPath));
             serverUrl = server.getProperty("url.server.transport-service");
-            System.out.println(serverUrl);
+            logger.info(serverUrl);
         }
         catch (IOException ex){
             logger.info(ex.getMessage());
@@ -54,20 +54,15 @@ public class TransportServices {
         LocalDateTime dateTime = LocalDateTime.now();
         logger.info("Chamando o método calcula transport");
         try {
-            //precisa testar com o método de pé
             String resultCalculate = restTemplate.getForObject(apiUrl, String.class);
             logger.info("O valor do transport é  {} ", resultCalculate);
             mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
             return resultCalculate;
 
         }
-        catch (HttpClientErrorException e) {
-            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
-            logger.error(e.getMessage());
-        }
         catch (Exception e){
             mediator.getNext(FAIL_MSG, SERVICE, dateTime);
-            logger.error(e.getMessage()  + "  Caiuu aquiii");
+            logger.error(e.getMessage());
         }
 
         return null;
@@ -86,7 +81,6 @@ public class TransportServices {
 
         HttpEntity<TransportDto> request = new HttpEntity<>(transportSendRequest, headers);
         try {
-            //precisa testar com o método de pé
             String responseSendTransport = restTemplate.postForObject(apiUrl, request, String.class);
             List<Transport> transport = new ArrayList<>();
             logger.info("O id do transport é  {} ", responseSendTransport);
@@ -94,7 +88,7 @@ public class TransportServices {
 
         } catch (HttpClientErrorException e) {
             mediator.getNext(FAIL_MSG, SERVICE, dateTime);
-            logger.error(e.getMessage() + "  Caiuu aquiii");
+            logger.error(e.getMessage());
         }
 
     }
@@ -119,11 +113,9 @@ public class TransportServices {
 
         } catch (HttpClientErrorException e) {
             mediator.getNext(FAIL_MSG, SERVICE, dateTime);
-            logger.error(e.getMessage() + "  Caiuu aquiii");
+            logger.error(e.getMessage());
         }
 
     }
-
-
 }
 
