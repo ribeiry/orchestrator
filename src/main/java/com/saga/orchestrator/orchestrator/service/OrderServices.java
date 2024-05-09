@@ -121,13 +121,13 @@ public class OrderServices {
         }
         catch (HttpClientErrorException e){
             mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
-            mediator.saveOrechestratorResult(null, e.getStatusCode().value(), SERVICE + "Indisponível", e.getCause());
+            mediator.saveOrechestratorResult(null, e.getStatusCode().value(), "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
             logger.error(e.getMessage() + "Caiuu aquii");
             return null;
         }
         catch (Exception e){
             mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
-            mediator.saveOrechestratorResult(null, 503, SERVICE + "Exceção não tratada", e.getCause());
+            mediator.saveOrechestratorResult(null, 503, "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
             logger.error(e.getMessage() + "Caiuu aquii");
             return null;
         }

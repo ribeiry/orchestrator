@@ -46,10 +46,12 @@ public class TransportServices {
         }
         catch (HttpClientErrorException e) {
             mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveOrechestratorResult(issue.getOrder().getCodPedido(), e.getStatusCode().value(), "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
             logger.error(e.getMessage());
         }
         catch (Exception e){
             mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveOrechestratorResult(issue.getOrder().getCodPedido(), 503, "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
             logger.error(e.getMessage()  + "  Caiuu aquiii");
         }
 
@@ -74,14 +76,15 @@ public class TransportServices {
             List<Transport> transport = new ArrayList<>();
             logger.info("O id do transport é  {} ", responseSendTransport);
             mediator.saveMicroserviceResult(SUCESS_MSG, SERVICE, dateTime);
+            mediator.saveOrechestratorResult(issue.getOrder().getCodPedido(), 200, "Pedido concluído com sucesso", null);
 
         } catch (HttpClientErrorException e) {
             mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
-            mediator.saveOrechestratorResult(issue.getOrder().getCodPedido(), e.getStatusCode().value(), SERVICE + "Indisponível", e.getCause());
+            mediator.saveOrechestratorResult(issue.getOrder().getCodPedido(), e.getStatusCode().value(), "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
             logger.error(e.getMessage() + "  Caiuu aquiii");
         }catch (Exception e){
             mediator.saveMicroserviceResult(FAIL_MSG,SERVICE,dateTime );
-            mediator.saveOrechestratorResult(issue.getOrder().getCodPedido(), 503, SERVICE + "Exceção não tratada", e.getCause());
+            mediator.saveOrechestratorResult(issue.getOrder().getCodPedido(), 503, "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
             logger.error(e.getMessage());
         }
 

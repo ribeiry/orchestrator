@@ -116,13 +116,13 @@ public class StockServices {
             }
             else{
                 logger.error(e.getMessage());
-                mediator.saveOrechestratorResult(codigoPedido, 503, SERVICE + "Exceção não tratada", e.getCause());
+                mediator.saveOrechestratorResult(codigoPedido, 503, "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
 
             }
         }
         catch (Exception e){
             mediator.saveMicroserviceResult(FAIL_MSG,SERVICE,dateTime );
-            mediator.saveOrechestratorResult(codigoPedido, 503, SERVICE + "Exceção não tratada", e.getCause());
+            mediator.saveOrechestratorResult(codigoPedido, 503, "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
             logger.error(e.getMessage());
         }
     }

@@ -83,10 +83,12 @@ public class Mediator implements IMediator {
 
         Map<String, String> result = redis.hgetAll(hashKey);
 
-        orchestratorResultDTO.setCodPedido(result.get(codigoPedido));
-        //orchestratorResultDTO.setMessage(result.get("message"));
-        //orchestratorResultDTO.setDateTime(LocalDateTime.parse(result.get("DateTime")));
-
+        orchestratorResultDTO.setCodPedido(result.get("CodigoPedido"));
+        orchestratorResultDTO.setHttpstatuscod(result.get("HttpStatusCode"));
+        orchestratorResultDTO.setHttpmessage(result.get("HttpStatusMessage"));
+        if(result.get("Cause") != null){
+            orchestratorResultDTO.setHttpcause(result.get("Cause"));
+        }
 
         return  orchestratorResultDTO;
 
@@ -97,7 +99,7 @@ public class Mediator implements IMediator {
     @Override
     public void saveOrechestratorResult(String codigoPedido, int httpstatuscode, String httpstatusmessage, Throwable cause) {
 
-        String hashKey = String.format("Mediator%s", httpstatusmessage);
+        String hashKey = String.format("Mediator%s", codigoPedido);
 
         Jedis redis = redisConnect.configurationRedis("localhost", 6379);
         logger.info("Iniciando a classe de proximo serivco");
@@ -107,7 +109,7 @@ public class Mediator implements IMediator {
         hash.put("CodigoPedido", codigoPedido);
         hash.put("HttpStatusCode", String.valueOf(httpstatuscode));
         hash.put("HttpStatusMessage", httpstatusmessage);
-        hash.put("Cause", cause.getMessage());
+        if (cause != null ) hash.put("Cause", cause.getMessage());
         try {
             redis.hset(hashKey, hash);
             logger.info(redis.hgetAll(hashKey).toString());

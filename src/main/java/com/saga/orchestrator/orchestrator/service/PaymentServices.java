@@ -52,12 +52,12 @@ public class PaymentServices {
         }
         catch (HttpClientErrorException e) {
             mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
-            mediator.saveOrechestratorResult(issue.getOrder().getCodPedido(), e.getStatusCode().value(), SERVICE + "Indisponível", e.getCause());
+            mediator.saveOrechestratorResult(issue.getOrder().getCodPedido(), e.getStatusCode().value(), "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
             logger.error(e.getMessage());
         }
         catch (Exception e ){
             mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
-            mediator.saveOrechestratorResult(issue.getOrder().getCodPedido(), 503, SERVICE + "Exceção não tratada", e.getCause());
+            mediator.saveOrechestratorResult(issue.getOrder().getCodPedido(), 503, "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
             logger.error(e.getMessage());
         }
 

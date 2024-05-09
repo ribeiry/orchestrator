@@ -27,11 +27,7 @@ public class Orchestrator {
 
     public OrchestratorResultDTO callFunctions(Issue issue) {
 
-
         //TODO: Inserir um controle While
-
-//       String cod_pedido = "";
-
        State state = new State();
        int i = 0;
        while (state.getOrderState() != null){
@@ -40,16 +36,7 @@ public class Orchestrator {
            state.nextState(issue);
        }
 
-//        OrchestratorResultDTO orchestratorResultDTO = new OrchestratorResultDTO();
-
        return mediator.getOrechestratorResult(issue.getOrder().getCodPedido());
-//       if(issue.getOrder().getCodPedido() != null){
-//           if(!issue.getOrder().getCodPedido().isEmpty() ||
-//                !issue.getOrder().getCodPedido().isBlank()){
-//            cod_pedido = issue.getOrder().getCodPedido();
-//           }
-//       }
-//       return cod_pedido;
     }
 }
 
