@@ -1,22 +1,43 @@
 package com.saga.orchestrator.orchestrator.service;
 
-import com.saga.orchestrator.orchestrator.mediator.Communicator;
+import com.saga.orchestrator.orchestrator.mediator.Mediator;
+import com.saga.orchestrator.orchestrator.model.Issue;
+import com.saga.orchestrator.orchestrator.model.OrchestratorResultDTO;
+import com.saga.orchestrator.orchestrator.state.State;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
+
+@Service
 public class Orchestrator {
 
-    //TODO: Nessa classe que iremos controlar quais chamadas e qual é o status do semaforo para saber se andaremos
-    //TODO: para a proxima requisicao.
-    //TODO: 1 - CRIA O PEDIDO 2 - VERIFICA Produto no ESTOQUE 3 - RETIRA DO ESTOQUE 4 - CALCULO O PRECO DO ESTOQUE 5 - CRIO PAGAMENTO  6 - EXIBO PRAZO DE ENTREGA
+    //Nessa classe que iremos controlar quais chamadas e qual é o status do semaforo para saber se andaremos
 
 
-    private Communicator mediator = new Communicator();
-    public boolean callFunctions(){
-        boolean next = true;
+    //TODO: ->>> Tratar a exception de retorno (500)
+    //TODO: ->>> Colocar as propriedades da Services em properties
 
 
 
 
-        return next;
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private Mediator mediator = new Mediator();
+
+    public OrchestratorResultDTO callFunctions(Issue issue) {
+
+        //TODO: Inserir um controle While
+       State state = new State();
+       int i = 0;
+       while (state.getOrderState() != null){
+           logger.info("Getting % state", i );
+           logger.info(state.printStatusState());
+           state.nextState(issue);
+       }
+
+       return mediator.getOrechestratorResult(issue.getOrder().getCodPedido());
     }
-
 }
+
+

@@ -1,15 +1,11 @@
 package com.saga.orchestrator.orchestrator.service;
 
+
+import com.saga.orchestrator.orchestrator.mediator.Mediator;
+import com.saga.orchestrator.orchestrator.model.Order;
 import com.saga.orchestrator.orchestrator.model.OrderDto;
-import com.saga.orchestrator.orchestrator.model.ProdutoDTO;
-import com.saga.orchestrator.orchestrator.model.StockDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.http.*;
-import com.saga.orchestrator.orchestrator.mediator.Communicator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -20,26 +16,26 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
-@PropertySource("classpath:application.properties")
 public class OrderServices {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final  String SERVICE = "ORDER";
-    private final  String SUCESS_MSG = "SUCESS";
-
-    @Autowired
-    public Environment environment;
-
+    private final  String SUCESS_MSG = "SUCCESS";
 
     private  final String apiUrl = "http://localhost:8081/orders";
+
+    @Value("${server.url.order-service}")
+   private String apiUrls ;
+
+
     private final  String FAIL_MSG = "FAIL";
 
-    private Communicator mediator = new Communicator();
+    private Mediator mediator = new Mediator();
 
-    public OrderServices() {
+    public OrderServices (){
+
     }
-
 
     public void getAllOrders() throws HttpClientErrorException {
         OrderDto orderRequest = new OrderDto();
@@ -56,7 +52,7 @@ public class OrderServices {
             List<OrderDto> order = new ArrayList<>();
             order = response.getBody();
             logger.info("O retorno de pedidos é " + order);
-            mediator.getNext(SUCESS_MSG,SERVICE,dateTime);
+            mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE,dateTime);
             for (int i = 0; i < order.size(); i++) {
                 Object pedido = order.get(i);
                 if (pedido instanceof LinkedHashMap<?, ?>) {
@@ -72,15 +68,15 @@ public class OrderServices {
             }
         }
         catch (HttpClientErrorException e){
-            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
             logger.info(e.getMessage() + "  Caiuu aquiii");
         }
     }
 
-    public void getAOrders() throws HttpClientErrorException {
+    public void getAOrders(String id) throws HttpClientErrorException {
         OrderDto orderRequest = new OrderDto();
         RestTemplate restTemplate = new RestTemplate();
-        String url = String.format("%s/cf1048be-a914-494b-984d-1253c6efad1e", apiUrl);
+        String url = String.format("%s/id", apiUrl,id);
         LocalDateTime dateTime = LocalDateTime.now();
         logger.info("Chamando o método getAOrders() e efetuando a leitura de pedidos");
 
@@ -94,37 +90,45 @@ public class OrderServices {
             logger.info("O retorno de pedidos é {}" ,order);
 
             logger.info(String.valueOf(order));
-            mediator.getNext(SUCESS_MSG,SERVICE,dateTime );
+            mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE,dateTime );
 
         }
         catch (HttpClientErrorException e){
-            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
             logger.info(e.getMessage() + "  Caiuu aquiii");
         }
 
     }
 
-    public  OrderDto CreateOrder(OrderDto orderDto) throws HttpClientErrorException{
+    public  String CreateOrder(Order order) throws HttpClientErrorException{
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<OrderDto> entity = new HttpEntity<OrderDto>(orderDto,headers);
+        HttpEntity<Order> entity = new HttpEntity<Order>(order,headers);
 
         logger.info("Chamando o método postCreateOrder()");
 
         try {
 
-            OrderDto response =  restTemplate.exchange(apiUrl, HttpMethod.POST, entity,OrderDto.class).getBody();
-            logger.info(String.valueOf(response));
-            mediator.getNext(SUCESS_MSG,SERVICE,dateTime);
+            String response =  restTemplate.exchange(apiUrl, HttpMethod.POST, entity,String.class).getBody();
+            response = response.replaceAll("\"", "");
+            logger.info("ID do pedido criado retornado {}", response);
+
+            mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE,dateTime);
             return  response;
         }
         catch (HttpClientErrorException e){
-
-            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
-            logger.info(e.getMessage() + "Caiuu aquii");
+            mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveOrechestratorResult(null, e.getStatusCode().value(), "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
+            logger.error(e.getMessage() + "Caiuu aquii");
+            return null;
+        }
+        catch (Exception e){
+            mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveOrechestratorResult(null, 503, "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
+            logger.error(e.getMessage() + "Caiuu aquii");
             return null;
         }
 
@@ -149,20 +153,21 @@ public class OrderServices {
             ResponseEntity<OrderDto> response = restTemplate.exchange(url , HttpMethod.PUT, requestEntity,  OrderDto.class);
             orderDto = response.getBody();
             HttpStatusCode resp = response.getStatusCode();
-            mediator.getNext(SUCESS_MSG,SERVICE,dateTime );
+            mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE,dateTime );
             logger.info("Retorno " +  String.valueOf(orderDto));
         }
         catch (final HttpClientErrorException e) {
 
             if(HttpStatus.NOT_FOUND.equals(e.getStatusCode())){
-                logger.info(e.getMessage() + "   caiu aquiiii");
-                mediator.getNext(FAIL_MSG,SERVICE,dateTime );
+                logger.error(e.getMessage() + "   caiu aquiiii");
+                mediator.saveMicroserviceResult(FAIL_MSG,SERVICE,dateTime );
             }
             else{
-                logger.info(e.getMessage());
+                logger.error(e.getMessage());
 
             }
         }
+
     }
 
 }

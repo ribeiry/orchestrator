@@ -6,11 +6,22 @@ public class Issue {
 
 
     //Dados Cliente
-    //Daddos Produto
-    //Dados Pagamento
+    //Daddos Product
     // e Dados transporte conforme abaixo
 
+    Order order;
+
     Transport transport;
+
+    Payment payment;
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
 
     public Transport getTransport() {
         return transport;
@@ -19,4 +30,13 @@ public class Issue {
     public void setTransport(Transport transport) {
         this.transport = transport;
     }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
+
 }
