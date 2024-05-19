@@ -64,15 +64,24 @@ public class PaymentServices {
             List<Payment> payments = new ArrayList<>();
             issue.getPayment().setPaymentId(responseSendPayment);
             logger.info("O id do pagamento é  " + responseSendPayment);
-            mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(SUCESS_MSG, SERVICE, dateTime);
+//            Comentado na feature/exception
+//            mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
+
 
         }
         catch (HttpClientErrorException e) {
-            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveOrechestratorResult(issue.getOrder().getCodPedido(), e.getStatusCode().value(), "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
+//            Comentado na feature/exception
+            //            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
             logger.error(e.getMessage());
         }
         catch (Exception e ){
-            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveOrechestratorResult(issue.getOrder().getCodPedido(), 503, "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
+//            Comentado na feature/exception
+            //            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
             logger.error(e.getMessage());
         }
 
@@ -94,10 +103,14 @@ public class PaymentServices {
         try {
             String response = restTemplate.postForObject(apiUrl, request, String.class);
             logger.info("Pedido cancelado " + response);
-            mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
+            //            Comentado na feature/exception
+//            mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(SUCESS_MSG, SERVICE, dateTime);
 
         } catch (HttpClientErrorException e) {
-            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
+            //            Comentado na feature/exception
+//            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
             logger.info(e.getMessage() + "  Caiuu aquiii");
         }
     }

@@ -2,6 +2,7 @@ package com.saga.orchestrator.service;
 
 import com.saga.orchestrator.mediator.Communicator;
 import com.saga.orchestrator.model.Issue;
+import com.saga.orchestrator.model.OrchestratorResultDTO;
 import com.saga.orchestrator.state.OrderState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,27 +22,22 @@ public class Orchestrator {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private Communicator mediator = new Communicator();
 
-    public String callFunctions(Issue issue) {
+    public OrchestratorResultDTO callFunctions(Issue issue) {
 
 
         //TODO: Inserir um controle While
 
-       String cod_pedido = "";
-
+       String cod_pedido = null;
        OrderState orderState = new OrderState();
        int i = 0;
        while (orderState.getState() != null){
            logger.info("Getting % state", i );
            logger.info(orderState.printStatus());
            orderState.nextState(issue);
+           if(cod_pedido == null && issue.getOrder().getCodPedido() != null) cod_pedido = issue.getOrder().getCodPedido();
+
        }
-       if(issue.getOrder().getCodPedido() != null){
-           if(!issue.getOrder().getCodPedido().isEmpty() ||
-                !issue.getOrder().getCodPedido().isBlank()){
-            cod_pedido = issue.getOrder().getCodPedido();
-           }
-       }
-       return cod_pedido;
+       return mediator.getOrechestratorResult(cod_pedido);
     }
 }
 

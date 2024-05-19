@@ -45,13 +45,17 @@ public class StockServices {
             for (int i = 0; i < stock.length; i++) {
                 logger.info(String.valueOf(stock[i]));
             }
-            mediator.getNext(SUCESS_MSG,SERVICE,dateTime );
+            //            Comentado na feature/exception
+//            mediator.getNext(SUCESS_MSG,SERVICE,dateTime );
+            mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE,dateTime );
         }
         catch (final  HttpClientErrorException e){
 
             if(HttpStatus.NOT_FOUND.equals(e.getStatusCode())){
                 logger.info(e.getMessage() + "   caiu aquiiii");
-                mediator.getNext(FAIL_MSG,SERVICE,dateTime );
+                //            Comentado na feature/exception
+//                mediator.getNext(FAIL_MSG,SERVICE,dateTime );
+                mediator.saveMicroserviceResult(FAIL_MSG,SERVICE,dateTime );
             }
             else{
                 logger.info(e.getMessage());
@@ -60,7 +64,7 @@ public class StockServices {
         }
     }
 
-    public  void getAProduct(String id) throws HttpClientErrorException{
+    public  void getAProduct(String codigoPedido, String id) throws HttpClientErrorException{
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
         String url = String.format("%s/%s", serverUrl,id);
@@ -69,14 +73,18 @@ public class StockServices {
             logger.info("Chamando o método getAProduct() e efetuando a leitura de um produto no estoque");
             StockDto product = restTemplate.getForObject(url, StockDto.class);
             logger.info(String.valueOf(product));
-            mediator.getNext(SUCESS_MSG,SERVICE,dateTime);
+            //            Comentado na feature/exception
+//            mediator.getNext(SUCESS_MSG,SERVICE,dateTime);
+            mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE,dateTime);
         }
         catch (final  HttpClientErrorException e){
 
             if(HttpStatus.NOT_FOUND.equals(e.getStatusCode())){
                 logger.error(e.getMessage() + "    caiu aquiiii");
-                mediator.getNext(FAIL_MSG,SERVICE,dateTime);
+//                mediator.getNext(FAIL_MSG,SERVICE,dateTime);
+                mediator.saveMicroserviceResult(FAIL_MSG,SERVICE,dateTime);
             }
+            mediator.saveOrechestratorResult(codigoPedido, e.getStatusCode().value(), SERVICE + "==== Nāo há quantidade suficiente de produtos ===", e.getCause());
         }
     }
 
@@ -95,7 +103,7 @@ public class StockServices {
         }
     }
 
-    public  void subAProduct(String id, int qtde) throws  HttpClientErrorException{
+    public  void subAProduct(String codigoPedido, String id, int qtde) throws  HttpClientErrorException{
         StockDto stock = new StockDto();
         RestTemplate restTemplate = new RestTemplate();
         String url = String.format("%s/%s/sub",serverUrl,id);
@@ -119,7 +127,9 @@ public class StockServices {
             stock = response.getBody();
             HttpStatusCode resp = response.getStatusCode();
             stock.setId(id);
-            mediator.getNext(SUCESS_MSG,SERVICE,dateTime );
+//            feature/exception
+//            mediator.getNext(SUCESS_MSG,SERVICE,dateTime );
+            mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE,dateTime );
             logger.info("Retorno  {}", stock);
         }
         catch (final HttpClientErrorException e) {
@@ -127,15 +137,21 @@ public class StockServices {
             if(HttpStatus.NOT_FOUND.equals(e.getStatusCode())){
                 logger.info("==== Nāo há quantidade suficiente de produtos ===");
                 logger.error(e.getMessage() );
-                mediator.getNext(FAIL_MSG,SERVICE,dateTime );
+                //            feature/exception
+//                mediator.getNext(FAIL_MSG,SERVICE,dateTime );
+                mediator.saveMicroserviceResult(FAIL_MSG,SERVICE,dateTime );
+                mediator.saveOrechestratorResult(codigoPedido, e.getStatusCode().value(), SERVICE + "==== Nāo há quantidade suficiente de produtos ===", e.getCause());
             }
             else{
                 logger.error(e.getMessage());
-
+                mediator.saveOrechestratorResult(codigoPedido, 503, "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
             }
         }
         catch (Exception e){
-            mediator.getNext(FAIL_MSG,SERVICE,dateTime );
+            //            feature/exception
+//            mediator.getNext(FAIL_MSG,SERVICE,dateTime );
+            mediator.saveMicroserviceResult(FAIL_MSG,SERVICE,dateTime );
+            mediator.saveOrechestratorResult(codigoPedido, 503, "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
             logger.error(e.getMessage());
         }
     }
@@ -165,20 +181,23 @@ public class StockServices {
             ResponseEntity<StockDto> response = restTemplate.exchange(url , HttpMethod.PUT, requestEntity,  StockDto.class);
             stock = response.getBody();
             stock.setId(id.split("/stock/")[1]);
-            mediator.getNext("SUCESS",SERVICE,dateTime );
+            //            feature/exception
+//            mediator.getNext("SUCESS",SERVICE,dateTime );
+            mediator.saveMicroserviceResult("SUCESS",SERVICE,dateTime );
             logger.info(String.valueOf(stock));
         }
         catch (final HttpClientErrorException e ){
             if(HttpStatus.NOT_FOUND.equals(e.getStatusCode())){
                 logger.info("Nāo tem o produto informado");
                 logger.error(e.getMessage());
-                mediator.getNext("FAIL",SERVICE,dateTime );
+                //            feature/exception
+//                mediator.getNext("FAIL",SERVICE,dateTime );
             }
             else{
                 logger.error(e.getMessage());
 
             }
-
+            mediator.saveMicroserviceResult("FAIL",SERVICE,dateTime );
         }
 
     }

@@ -20,7 +20,7 @@ public class CreateOrderStateI implements IOrderState {
     public void next(OrderState orderState, Issue issue) {
         if(orderState.isValidaPrev()) {
 
-             orderServices = new  OrderServices();
+            orderServices = new  OrderServices();
             String codPedido = orderServices.CreateOrder(issue.getOrder());
             issue.getOrder().setCodPedido(codPedido);
             if ("SUCCESS".equals(mediator.getStatus("ORDER").getMessage())) {
