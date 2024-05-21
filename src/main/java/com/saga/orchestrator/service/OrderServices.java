@@ -60,8 +60,7 @@ public class OrderServices {
             order = response.getBody();
             logger.info("O retorno de pedidos é " + order);
             mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE,dateTime);
-//            ##### Comentado na Feature/exception
-//            mediator.getNext(SUCESS_MSG,SERVICE,dateTime);
+            mediator.getNext(SUCESS_MSG,SERVICE,dateTime);
             for (int i = 0; i < order.size(); i++) {
                 Object pedido = order.get(i);
                 if (pedido instanceof LinkedHashMap<?, ?>) {
@@ -78,8 +77,7 @@ public class OrderServices {
         }
         catch (HttpClientErrorException e){
             mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
-            //            ##### Comentado na Feature/exception
-            //            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
             logger.info(e.getMessage() + "  Caiuu aquiii");
         }
     }
@@ -99,23 +97,20 @@ public class OrderServices {
             ResponseEntity response = restTemplate.exchange(url, HttpMethod.GET, request, OrderDto.class);
             OrderDto order = (OrderDto) response.getBody();
             logger.info("O retorno de pedidos é {}" ,order);
-
             logger.info(String.valueOf(order));
-            //            ##### Comentado na Feature/exception
-            //            mediator.getNext(SUCESS_MSG,SERVICE,dateTime );
+            mediator.getNext(SUCESS_MSG,SERVICE,dateTime );
             mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE,dateTime );
 
         }
         catch (HttpClientErrorException e){
             mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
-            //            ##### Comentado na Feature/exception
-            //            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
             logger.info(e.getMessage() + "  Caiuu aquiii");
         }
 
     }
 
-    public  String CreateOrder(Order order) throws HttpClientErrorException{
+    public  String CreateOrder(Order order, UUID idprocess) throws HttpClientErrorException{
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
 
@@ -130,26 +125,21 @@ public class OrderServices {
             String response =  restTemplate.exchange(serverUrl, HttpMethod.POST, entity,String.class).getBody();
             response = response.replaceAll("\"", "");
             logger.info("ID do pedido criado retornado {}", response);
-
-
             mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE,dateTime);
-            //            ##### Comentado na Feature/exception
-//            mediator.getNext(SUCESS_MSG,SERVICE,dateTime);
+            mediator.getNext(SUCESS_MSG,SERVICE,dateTime);
             return  response;
         }
         catch (HttpClientErrorException e){
             mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
-            mediator.saveOrechestratorResult(null, e.getStatusCode().value(), "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
-//            ##### Comentado na Feature/exception
-//            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveOrechestratorResult(idprocess, e.getStatusCode().value(), "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
+            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
             logger.error(e.getMessage() + "Caiuu aquii");
             return null;
         }
         catch (Exception e){
             mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
-            mediator.saveOrechestratorResult(null, 503, "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
-            //            ##### Comentado na Feature/exception
-//            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            mediator.saveOrechestratorResult(idprocess, 503, "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
+            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
             logger.error(e.getMessage());
             return null;
         }
@@ -176,8 +166,7 @@ public class OrderServices {
             orderDto = response.getBody();
             HttpStatusCode resp = response.getStatusCode();
             mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE,dateTime );
-            //            ##### Comentado na Feature/exception
-//            mediator.getNext(SUCESS_MSG,SERVICE,dateTime );
+            mediator.getNext(SUCESS_MSG,SERVICE,dateTime );
             logger.info("Retorno " +  String.valueOf(orderDto));
         }
         catch (final HttpClientErrorException e) {
@@ -185,8 +174,7 @@ public class OrderServices {
             if(HttpStatus.NOT_FOUND.equals(e.getStatusCode())){
                 logger.error(e.getMessage() + "   caiu aquiiii");
                 mediator.saveMicroserviceResult(FAIL_MSG,SERVICE,dateTime );
-                //            ##### Comentado na Feature/exception
-//                mediator.getNext(FAIL_MSG,SERVICE,dateTime );
+                mediator.getNext(FAIL_MSG,SERVICE,dateTime );
             }
             else{
                 logger.error(e.getMessage());

@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
+import java.util.UUID;
 
 @RestController
 public class OrchestratorController {
@@ -27,6 +27,9 @@ public class OrchestratorController {
 //        }
 //        return ResponseEntity.status(HttpStatus.OK).body(cod_pedido);
 
+
+
+        issue.setIdprocess(UUID.randomUUID());
         OrchestratorResultDTO orchestratorResultDTO = orchestrator.callFunctions(issue);
 
         if(orchestratorResultDTO != null) {

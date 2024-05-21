@@ -57,18 +57,18 @@ public class TransportServices {
             //precisa testar com o método de pé
             String resultCalculate = restTemplate.getForObject(apiUrl, String.class);
             logger.info("O valor do transport é  {} ", resultCalculate);
-//            mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
+            mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
             mediator.saveMicroserviceResult(SUCESS_MSG, SERVICE, dateTime);
             return resultCalculate;
 
         }
         catch (HttpClientErrorException e) {
-//            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
             mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
             logger.error(e.getMessage());
         }
         catch (Exception e){
-//            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
             mediator.saveMicroserviceResult(FAIL_MSG,SERVICE,dateTime );
             logger.error(e.getMessage()  + "  Caiuu aquiii");
         }
@@ -93,18 +93,18 @@ public class TransportServices {
             String responseSendTransport = restTemplate.postForObject(apiUrl, request, String.class);
             List<Transport> transport = new ArrayList<>();
             logger.info("O id do transport é  {} ", responseSendTransport);
-//            mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
+            mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
             mediator.saveMicroserviceResult(SUCESS_MSG, SERVICE, dateTime);
-            mediator.saveOrechestratorResult(issue.getOrder().getCodPedido(), 200, "Pedido concluído com sucesso", null);
+            mediator.saveOrechestratorResult(issue.getIdprocess(), 200, "Pedido concluído com sucesso", null);
 
         } catch (HttpClientErrorException e) {
-//        mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+        mediator.getNext(FAIL_MSG, SERVICE, dateTime);
             mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
-            mediator.saveOrechestratorResult(issue.getOrder().getCodPedido(), e.getStatusCode().value(), "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
+            mediator.saveOrechestratorResult(issue.getIdprocess(), e.getStatusCode().value(), "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
             logger.error(e.getMessage() + "  Caiuu aquiii");
         }catch (Exception e){
             mediator.saveMicroserviceResult(FAIL_MSG,SERVICE,dateTime );
-            mediator.saveOrechestratorResult(issue.getOrder().getCodPedido(), 503, "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
+            mediator.saveOrechestratorResult(issue.getIdprocess(), 503, "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
             logger.error(e.getMessage());
         }
 
@@ -126,10 +126,10 @@ public class TransportServices {
         try {
             String response = restTemplate.postForObject(apiUrl, request, String.class);
             logger.info("Pedido canecelado {} ", response);
-//          mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
+            mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
             mediator.saveMicroserviceResult(SUCESS_MSG, SERVICE, dateTime);
         } catch (HttpClientErrorException e) {
-//          mediator.getNext(FAIL_MSG, SERVICE, dateTime);
+            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
             mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
             logger.error(e.getMessage() + "  Caiuu aquiii");
         } catch (Exception e){

@@ -8,8 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-
 
 @Service
 public class Orchestrator {
@@ -34,10 +32,8 @@ public class Orchestrator {
            logger.info("Getting % state", i );
            logger.info(orderState.printStatus());
            orderState.nextState(issue);
-           if(cod_pedido == null && issue.getOrder().getCodPedido() != null) cod_pedido = issue.getOrder().getCodPedido();
-
        }
-       return mediator.getOrechestratorResult(cod_pedido);
+       return mediator.getOrechestratorResult(issue.getIdprocess().toString());
     }
 }
 

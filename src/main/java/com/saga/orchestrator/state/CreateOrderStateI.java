@@ -21,7 +21,7 @@ public class CreateOrderStateI implements IOrderState {
         if(orderState.isValidaPrev()) {
 
             orderServices = new  OrderServices();
-            String codPedido = orderServices.CreateOrder(issue.getOrder());
+            String codPedido = orderServices.CreateOrder(issue.getOrder(), issue.getIdprocess());
             issue.getOrder().setCodPedido(codPedido);
             if ("SUCCESS".equals(mediator.getStatus("ORDER").getMessage())) {
                 orderState.setState(new StockState());

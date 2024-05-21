@@ -29,7 +29,7 @@ public class StockState implements  IOrderState{
             stockServices = new StockServices();
             List<Product> products = issue.getOrder().getProdutos();
             for (Product product : products) {
-                stockServices.subAProduct(issue.getOrder().getCodPedido(), product.getIdProduto(), product.getQuantidade());
+                stockServices.subAProduct(issue.getIdprocess(), product.getIdProduto(), product.getQuantidade());
                 if (!"SUCCESS".equals(mediator.getStatus("STOCK").getMessage())) {
                     break;
                 }

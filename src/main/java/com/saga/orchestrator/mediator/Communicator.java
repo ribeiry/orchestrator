@@ -11,6 +11,7 @@ import redis.clients.jedis.exceptions.JedisException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class Communicator implements  ICommunicator{
 
@@ -111,16 +112,16 @@ public class Communicator implements  ICommunicator{
     }
 
     @Override
-    public void saveOrechestratorResult(String codigoPedido, int httpstatuscode, String httpstatusmessage, Throwable cause) {
+    public void saveOrechestratorResult(UUID idprocess, int httpstatuscode, String httpstatusmessage, Throwable cause) {
 
-        String hashKey = String.format("Mediator%s", codigoPedido);
+        String hashKey = String.format("Mediator%s", idprocess);
 
         Jedis redis = redisConnect.configurationRedis("localhost", 6379);
         logger.info("Iniciando a classe de proximo serivco");
 
         Map<String, String> hash = new HashMap<>();
-        logger.info("CodigoPedido: " + codigoPedido + " ---- HttpStatusCode: " + httpstatuscode + " ---- HttpStatusMessage: " + httpstatusmessage + " Cause: " + cause);
-        hash.put("CodigoPedido", codigoPedido);
+        logger.info("CodigoPedido: " + idprocess + " ---- HttpStatusCode: " + httpstatuscode + " ---- HttpStatusMessage: " + httpstatusmessage + " Cause: " + cause);
+        hash.put("CodigoPedido", String.valueOf(idprocess));
         hash.put("HttpStatusCode", String.valueOf(httpstatuscode));
         hash.put("HttpStatusMessage", httpstatusmessage);
         if (cause != null ) hash.put("Cause", cause.getMessage());

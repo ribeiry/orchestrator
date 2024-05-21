@@ -1,5 +1,7 @@
 package com.saga.orchestrator.model;
 
+import java.util.UUID;
+
 public class Issue {
 
     //Esta seria o objeto (body) da requisição ao orquestrador, conforme dessenho deveria haver os seguintes objetos :
@@ -9,11 +11,21 @@ public class Issue {
     //Daddos Product
     // e Dados transporte conforme abaixo
 
+    UUID idprocess;
+
     Order order;
 
     Transport transport;
 
     Payment payment;
+
+    public UUID getIdprocess() {
+        return idprocess;
+    }
+
+    public void setIdprocess(UUID idprocess) {
+        this.idprocess = idprocess;
+    }
 
     public Order getOrder() {
         return order;

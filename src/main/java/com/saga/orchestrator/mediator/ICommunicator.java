@@ -3,6 +3,7 @@ package com.saga.orchestrator.mediator;
 import com.saga.orchestrator.model.CommunicatorDTO;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 public interface ICommunicator {
@@ -11,7 +12,7 @@ public interface ICommunicator {
 
     CommunicatorDTO getMicroserviceResult(String service);
 
-    void saveOrechestratorResult(String codigoPedido, int httpstatuscode, String httpstatusmessage, Throwable cause);
+    void saveOrechestratorResult(UUID idprocess, int httpstatuscode, String httpstatusmessage, Throwable cause);
 
     boolean saveMicroserviceResult(String message, String service, LocalDateTime data);
 }
