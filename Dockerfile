@@ -1,7 +1,10 @@
 
-FROM eclipse-temurin:17-jdk-jammy AS ORCHASTRATORSERVICES
+FROM openjdk:22-ea-17-jdk-slim AS ORCHASTRATORSERVICES
 
 WORKDIR /app
+
+# Set the JVM memory options for the Spring Boot application
+ENV JAVA_OPTS = "-Xmx1G -Xms512m -XX:+UseCGroupMemoryLimitForHeap+UseG1GC"
 
 COPY .mvn/ .mvn
 COPY mvnw pom.xml ./
@@ -14,4 +17,4 @@ EXPOSE 8080
 
 LABEL authors="augustoribeiro"
 
-CMD["./mvnw", "spring-boot:run"]
+CMD ["./mvnw", "spring-boot:run"]

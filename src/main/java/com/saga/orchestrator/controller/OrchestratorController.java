@@ -19,16 +19,7 @@ public class OrchestratorController {
     @PostMapping("/issue")
     public ResponseEntity<String> issueOrder(@RequestBody Issue issue) {
 
-//        System.out.println("Starting...");
-//        String cod_pedido = orchestrator.callFunctions(issue);
-//
-//        if(cod_pedido.isBlank() || cod_pedido.isEmpty()){
-//            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Houve um problema ao processar a requisicao");
-//        }
-//        return ResponseEntity.status(HttpStatus.OK).body(cod_pedido);
-
-
-
+        System.out.println("Starting...");
         issue.setIdprocess(UUID.randomUUID());
         OrchestratorResultDTO orchestratorResultDTO = orchestrator.callFunctions(issue);
 
@@ -43,9 +34,4 @@ public class OrchestratorController {
 
 
     }
-
-
-
-
-
 }

@@ -18,13 +18,14 @@ public class Communicator implements  ICommunicator{
     private final Logger logger = LoggerFactory.getLogger(getClass());
     RedisConfig redisConnect = new RedisConfig();
 
+    private static final  String SERVER_REDIS = "172.17.0.3";
     @Override
     public boolean getNext(String message, String service, LocalDateTime data)
     {
 
         String hashKey = String.format("Communicator%s", service);
 
-        Jedis redis = redisConnect.configurationRedis("localhost", 6379);
+        Jedis redis = redisConnect.configurationRedis(SERVER_REDIS, 6379);
         logger.info("Iniciando a classe de proximo serivco");
         if("SUCCESS".equalsIgnoreCase(message)) {
             Map<String, String> hash = new HashMap<>();
@@ -61,7 +62,7 @@ public class Communicator implements  ICommunicator{
 
     public CommunicatorDTO getStatus(String service){
         CommunicatorDTO communicatorDTO = new CommunicatorDTO();
-        Jedis redis = redisConnect.configurationRedis("localhost", 6379);
+        Jedis redis = redisConnect.configurationRedis(SERVER_REDIS, 6379);
 //        String hashKey = String.format("Communicator%s", service);
         String hashKey = String.format("Mediator%s", service);
         Map<String, String> result = redis.hgetAll(hashKey);
@@ -78,7 +79,7 @@ public class Communicator implements  ICommunicator{
 
     public OrchestratorResultDTO getOrechestratorResult(String codigoPedido){
         OrchestratorResultDTO orchestratorResultDTO = new OrchestratorResultDTO();
-        Jedis redis = redisConnect.configurationRedis("localhost", 6379);
+        Jedis redis = redisConnect.configurationRedis(SERVER_REDIS, 6379);
         String hashKey = String.format("Mediator%s", codigoPedido);
 
         Map<String, String> result = redis.hgetAll(hashKey);
@@ -97,7 +98,7 @@ public class Communicator implements  ICommunicator{
     @Override
     public CommunicatorDTO getMicroserviceResult(String service){
         CommunicatorDTO communicatorDTO = new CommunicatorDTO();
-        Jedis redis = redisConnect.configurationRedis("localhost", 6379);
+        Jedis redis = redisConnect.configurationRedis(SERVER_REDIS, 6379);
         String hashKey = String.format("Mediator%s", service);
 
         Map<String, String> result = redis.hgetAll(hashKey);
@@ -116,7 +117,7 @@ public class Communicator implements  ICommunicator{
 
         String hashKey = String.format("Mediator%s", idprocess);
 
-        Jedis redis = redisConnect.configurationRedis("localhost", 6379);
+        Jedis redis = redisConnect.configurationRedis(SERVER_REDIS, 6379);
         logger.info("Iniciando a classe de proximo serivco");
 
         Map<String, String> hash = new HashMap<>();
@@ -144,7 +145,7 @@ public class Communicator implements  ICommunicator{
 
         String hashKey = String.format("Mediator%s", service);
 
-        Jedis redis = redisConnect.configurationRedis("localhost", 6379);
+        Jedis redis = redisConnect.configurationRedis(SERVER_REDIS, 6379);
         logger.info("Iniciando a classe de proximo serivco");
         if("SUCCESS".equalsIgnoreCase(message)) {
             Map<String, String> hash = new HashMap<>();
