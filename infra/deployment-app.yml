@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: red
+  namespace: orchestrator
+spec:
+  containers:
+    - name: orchestrator
+      image: docker.io/library/orchestrator:latest
+      imagePullPolicy: IfNotPresent
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: orchestrator
+        spec:
+          containers:
+            - name: orchestrator
+              image: docker.io/library/orchestrator:latest
+              imagePullPolicy: IfNotPresent
+              resources:
+                limits:
+                  memory: "528Mi"
+                  cpu: "500m"
+              volumeMounts:
+                - name: Log
+                  mountPath: /logs
+              ports:
+                - containerPort: 8080
+                  protocol: TCP
+          volumes:
+            - name: Log
+              emptyDir: {}

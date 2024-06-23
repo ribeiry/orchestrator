@@ -1,0 +1,24 @@
+# syntax=docker/dockerfile:1
+
+FROM eclipse-temurin:17-jdk-jammy AS ORCHESTRATORSERVICE
+
+# Diretório de trabalho no contêiner
+WORKDIR /app
+
+# Set the JVM memory options for the Spring Boot application
+ENV JAVA_OPTS = "-Xmx1G -Xms512m -XX:+UseCGroupMemoryLimitForHeap+UseG1GC"
+
+# Copie o arquivo JAR do seu aplicativo para o contêiner
+COPY ../app/.mvn/ .mvn
+COPY mvnw pom.xml ./
+
+RUN ./mvnw dependency:resolve
+
+COPY ../app/src ./src
+
+EXPOSE 8080
+
+LABEL authors="augustoribeiro"
+
+# Comando para executar o aplicativo Java (substitua com sua classe principal)
+CMD ["./mvnw", "spring-boot:run"]
