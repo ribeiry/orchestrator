@@ -27,7 +27,7 @@ spec:
         - name: redisvolume
           mountPath: /data
         ports:
-        - containerPort: 5540
+        - containerPort: 6379
           protocol: TCP
       volumes:
       - name: redisvolume

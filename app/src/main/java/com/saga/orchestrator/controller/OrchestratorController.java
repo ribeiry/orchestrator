@@ -1,17 +1,13 @@
 package com.saga.orchestrator.controller;
 
-import com.saga.orchestrator.configuration.GetParameter;
-import com.saga.orchestrator.configuration.SetUp;
 import com.saga.orchestrator.model.Issue;
 import com.saga.orchestrator.model.OrchestratorResultDTO;
 import com.saga.orchestrator.service.Orchestrator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
 import java.util.UUID;
 
 import static com.saga.orchestrator.constant.Constant.INTERNAL_SERVER_ERROR;
