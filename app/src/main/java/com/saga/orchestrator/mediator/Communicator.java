@@ -24,16 +24,16 @@ public class Communicator implements  ICommunicator{
     static GetParameter parameter = new GetParameter();
     private final Logger logger = LoggerFactory.getLogger(getClass());
     RedisConfig redisConnect = new RedisConfig();
-    private static String SERVER_REDIS =  "";
-    private static Integer PORT_REDIS   =  0 ;
+    private static String SERVER_REDIS =  "192.168.105.4";
+    private static Integer PORT_REDIS   =  6379 ;
 
 
     @Override
     public boolean getNext(String message, String service, LocalDateTime data) {
 
         String hashKey = String.format("Communicator%s", service);
-        SERVER_REDIS =  parameter.getParamValue(parameter.connect(),"urlRedis");
-        PORT_REDIS  =  Integer.valueOf(parameter.getParamValue(parameter.connect(),"portRedis"));
+       // SERVER_REDIS =  parameter.getParamValue(parameter.connect(),"urlRedis");
+        //PORT_REDIS  =  Integer.valueOf(parameter.getParamValue(parameter.connect(),"portRedis"));
 
         logger.info("Server REDIS {} PORT REDIS {}", SERVER_REDIS, PORT_REDIS);
         Jedis redis = redisConnect.configurationRedis(SERVER_REDIS, PORT_REDIS);
@@ -73,8 +73,8 @@ public class Communicator implements  ICommunicator{
 
     public CommunicatorDTO getStatus(String service){
 
-        SERVER_REDIS =  parameter.getParamValue(parameter.connect(),"urlRedis");
-        PORT_REDIS  =  Integer.valueOf(parameter.getParamValue(parameter.connect(),"portRedis"));
+   //     SERVER_REDIS =  parameter.getParamValue(parameter.connect(),"urlRedis");
+   //     PORT_REDIS  =  Integer.valueOf(parameter.getParamValue(parameter.connect(),"portRedis"));
         CommunicatorDTO communicatorDTO = new CommunicatorDTO();
         logger.info("Server REDIS {} PORT REDIS {}", SERVER_REDIS, PORT_REDIS);
         Jedis redis = redisConnect.configurationRedis(SERVER_REDIS, PORT_REDIS);
@@ -94,8 +94,8 @@ public class Communicator implements  ICommunicator{
 
     public OrchestratorResultDTO getOrechestratorResult(String codigoPedido){
         OrchestratorResultDTO orchestratorResultDTO = new OrchestratorResultDTO();
-        SERVER_REDIS =  parameter.getParamValue(parameter.connect(),"urlRedis");
-        PORT_REDIS  =  Integer.valueOf(parameter.getParamValue(parameter.connect(),"portRedis"));
+   //     SERVER_REDIS =  parameter.getParamValue(parameter.connect(),"urlRedis");
+   //     PORT_REDIS  =  Integer.valueOf(parameter.getParamValue(parameter.connect(),"portRedis"));
         logger.info("Server REDIS {} PORT REDIS {}", SERVER_REDIS, PORT_REDIS);
         Jedis redis = redisConnect.configurationRedis(SERVER_REDIS, PORT_REDIS);
         String hashKey = String.format("Mediator%s", codigoPedido);
@@ -116,8 +116,8 @@ public class Communicator implements  ICommunicator{
     @Override
     public CommunicatorDTO getMicroserviceResult(String service){
         CommunicatorDTO communicatorDTO = new CommunicatorDTO();
-        SERVER_REDIS =  parameter.getParamValue(parameter.connect(),"urlRedis");
-        PORT_REDIS  =  Integer.valueOf(parameter.getParamValue(parameter.connect(),"portRedis"));
+  //      SERVER_REDIS =  parameter.getParamValue(parameter.connect(),"urlRedis");
+  //      PORT_REDIS  =  Integer.valueOf(parameter.getParamValue(parameter.connect(),"portRedis"));
         logger.info("Server REDIS {} PORT REDIS {}", SERVER_REDIS, PORT_REDIS);
         Jedis redis = redisConnect.configurationRedis(SERVER_REDIS, PORT_REDIS);
         String hashKey = String.format("Mediator%s", service);
@@ -137,8 +137,8 @@ public class Communicator implements  ICommunicator{
     public void saveOrechestratorResult(UUID idprocess, int httpstatuscode, String httpstatusmessage, Throwable cause) {
 
         String hashKey = String.format("Mediator%s", idprocess);
-        SERVER_REDIS =  parameter.getParamValue(parameter.connect(),"urlRedis");
-        PORT_REDIS  =  Integer.valueOf(parameter.getParamValue(parameter.connect(),"portRedis"));
+    //    SERVER_REDIS =  parameter.getParamValue(parameter.connect(),"urlRedis");
+    //    PORT_REDIS  =  Integer.valueOf(parameter.getParamValue(parameter.connect(),"portRedis"));
         logger.info("Server REDIS {} PORT REDIS {}", SERVER_REDIS, PORT_REDIS);
         Jedis redis = redisConnect.configurationRedis(SERVER_REDIS, PORT_REDIS);
         logger.info("Iniciando a classe de proximo serivco");
@@ -166,8 +166,8 @@ public class Communicator implements  ICommunicator{
     public boolean saveMicroserviceResult(String message, String service, LocalDateTime data) {
 
         String hashKey = String.format("Mediator%s", service);
-        SERVER_REDIS =  parameter.getParamValue(parameter.connect(),"urlRedis");
-        PORT_REDIS  =  Integer.valueOf(parameter.getParamValue(parameter.connect(),"portRedis"));
+    //    SERVER_REDIS =  parameter.getParamValue(parameter.connect(),"urlRedis");
+    //    PORT_REDIS  =  Integer.valueOf(parameter.getParamValue(parameter.connect(),"portRedis"));
         logger.info("Server REDIS {} PORT REDIS {}", SERVER_REDIS, PORT_REDIS);
         Jedis redis = redisConnect.configurationRedis(SERVER_REDIS, PORT_REDIS);
         logger.info("Iniciando a classe de proximo serivco");

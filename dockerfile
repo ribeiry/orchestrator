@@ -15,6 +15,26 @@ COPY /app/mvnw  ./
 
 COPY /app/pom.xml ./
 
+# Atualize o gerenciador de pacotes e instale dependências necessárias
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    curl \
+    unzip \
+    python3 \
+    python3-pip \
+    groff \
+    less \
+    && rm -rf /var/lib/apt/lists/*
+
+# Link python3 to python
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
+# Instale o AWS CLI
+RUN pip3 install --no-cache-dir awscli
+
+# Verifique a instalação do AWS CLI
+RUN aws --version
+
 RUN ./mvnw dependency:resolve
 
 COPY ./app/src ./src

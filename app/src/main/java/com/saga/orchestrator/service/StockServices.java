@@ -46,7 +46,6 @@ public class StockServices {
         catch (final  HttpClientErrorException e){
 
             if(HttpStatus.NOT_FOUND.equals(e.getStatusCode())){
-                logger.info(e.getMessage() + "   caiu aquiiii");
                 mediator.getNext(FAIL_MSG,SERVICE_STOCK,dateTime );
                 mediator.saveMicroserviceResult(FAIL_MSG,SERVICE_STOCK,dateTime );
             }
@@ -72,7 +71,6 @@ public class StockServices {
         catch (final  HttpClientErrorException e){
 
             if(HttpStatus.NOT_FOUND.equals(e.getStatusCode())){
-                logger.error(e.getMessage() + "    caiu aquiiii");
                 mediator.getNext(FAIL_MSG,SERVICE_STOCK,dateTime);
                 mediator.saveMicroserviceResult(FAIL_MSG,SERVICE_STOCK,dateTime);
             }
@@ -89,7 +87,7 @@ public class StockServices {
             Properties server = new Properties();
             server.load(new FileInputStream(appConfigPath));
             serverUrl = server.getProperty("url.server.stock-service");
-            System.out.println(serverUrl);
+            logger.info(serverUrl);
         }
         catch (IOException ex){
             logger.info(ex.getMessage());

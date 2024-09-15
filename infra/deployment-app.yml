@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: orchestrator
-        image: orchestratorservices:v0.0.3
+        image: orchestratorservices:v0.0.5
         imagePullPolicy: IfNotPresent
         env:
           - name: ACCESS_KEY_ID
