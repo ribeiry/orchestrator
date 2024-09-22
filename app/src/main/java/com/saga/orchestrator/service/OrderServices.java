@@ -42,7 +42,6 @@ public class OrderServices {
         OrderDto orderRequest = new OrderDto();
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
-        logger.info("Chamando o método getAllOrders() e efetuando a leitura de pedidos");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -52,18 +51,12 @@ public class OrderServices {
             ResponseEntity<List> response = restTemplate.exchange(serverUrl, HttpMethod.GET, request, List.class);
             List order;
             order = response.getBody();
-            logger.info("O retorno de pedidos é %s", order);
             mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE_ORDER,dateTime);
             mediator.getNext(SUCESS_MSG,SERVICE_ORDER,dateTime);
             for (int i = 0; i < Objects.requireNonNull(order).size(); i++) {
                 Object pedido = order.get(i);
                 if (pedido instanceof LinkedHashMap<?, ?> linkedHashMap) {
                     ArrayList<?> produtos = (ArrayList<?>) linkedHashMap.get("produtos");
-                    if (produtos != null) {
-                        for (Object produto : produtos) {
-                            logger.info(produto.toString());
-                        }
-                    }
                 }
             }
         }
@@ -79,7 +72,6 @@ public class OrderServices {
         RestTemplate restTemplate = new RestTemplate();
         String url = String.format("%s/id", serverUrl,id);
         LocalDateTime dateTime = LocalDateTime.now();
-        logger.info("Chamando o método getAOrders() e efetuando a leitura de pedidos");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -88,7 +80,6 @@ public class OrderServices {
         try {
             ResponseEntity<OrderDto> response = restTemplate.exchange(url, HttpMethod.GET, request, OrderDto.class);
             OrderDto order = response.getBody();
-            logger.info("O retorno de pedidos é {}" ,order);
             logger.info(String.valueOf(order));
             mediator.getNext(SUCESS_MSG,SERVICE_ORDER,dateTime );
             mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE_ORDER,dateTime );
@@ -109,25 +100,14 @@ public class OrderServices {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Order> entity = new HttpEntity<Order>(order,headers);
-        logger.info("Chamando o método postCreateOrder()");
 
         try {
-
             String response =  restTemplate.exchange(serverUrl, HttpMethod.POST, entity,String.class).getBody();
             assert response != null;
             response = response.replaceAll("\"", "");
-            logger.info("ID do pedido criado retornado {}", response);
             mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE_ORDER,dateTime);
             mediator.getNext(SUCESS_MSG,SERVICE_ORDER,dateTime);
             return  response;
-        }
-        catch (HttpClientErrorException e){
-            mediator.saveMicroserviceResult(FAIL_MSG, SERVICE_ORDER, dateTime);
-            mediator.saveOrechestratorResult(idprocess, e.getStatusCode().value(),
-                    "Microservice : " + SERVICE_ORDER + "\n" + "Erro : Internal Server Error", e.getCause());
-            mediator.getNext(FAIL_MSG, SERVICE_ORDER, dateTime);
-            logger.error(e.getMessage());
-            return null;
         }
         catch (Exception e){
             mediator.saveMicroserviceResult(FAIL_MSG, SERVICE_ORDER, dateTime);
@@ -146,9 +126,6 @@ public class OrderServices {
         String url = String.format("%s/%s", serverUrl,id);
         LocalDateTime dateTime = LocalDateTime.now();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-
-        logger.info("Chamando o método putUpdateOrder() e cancelando o pedido id: ", id);
-
         HttpHeaders headers = new HttpHeaders();
 
         Map<String, String> param = new HashMap<String, String>();

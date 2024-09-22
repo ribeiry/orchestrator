@@ -21,10 +21,6 @@ public class OrchestratorController {
     @PostMapping(POST_URL)
     public ResponseEntity<String> issueOrder(@RequestBody Issue issue) {
 
-        System.out.println("Starting...");
-
-
-
         issue.setIdprocess(UUID.randomUUID());
         OrchestratorResultDTO orchestratorResultDTO = orchestrator.callFunctions(issue);
 

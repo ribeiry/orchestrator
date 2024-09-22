@@ -3,8 +3,14 @@ package com.saga.orchestrator.configuration;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.exceptions.JedisException;
 
 import java.time.Duration;
 
@@ -23,7 +29,7 @@ public class CircuitBreakerConfiguration {
                 //.recordExceptions(SQLException.class)
                 .build();
 
-        return circuitBreakerRegistry.circuitBreaker("orderCircuit",circuitBreakerConfig);
+        return circuitBreakerRegistry.circuitBreaker("orchestratorCircuit",circuitBreakerConfig);
     }
 
     @Bean

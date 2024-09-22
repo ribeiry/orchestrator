@@ -29,17 +29,13 @@ public class StockServices {
     private Communicator mediator = new Communicator();
     private  String serverUrl;
 
-    public void getAllStock() throws HttpClientErrorException{
+    public StockDto getAllStock() throws HttpClientErrorException{
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
         String url = String.format("%s/stock", serverUrl);
-        logger.info("Chamando o método getAllStock() e efetuando a leitura do estoque");
+        StockDto stock = new StockDto();
         try{
-            StockDto[] stock = restTemplate.getForObject(url, StockDto[].class);
-            logger.info("O retorno do estoque é %s", stock.length);
-            for (int i = 0; i < stock.length; i++) {
-                logger.info(String.valueOf(stock[i]));
-            }
+            stock = restTemplate.getForObject(url, StockDto.class);
             mediator.getNext(SUCESS_MSG,SERVICE_STOCK,dateTime );
             mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE_STOCK,dateTime );
         }
@@ -54,6 +50,7 @@ public class StockServices {
 
             }
         }
+        return stock;
     }
 
     public  void getAProduct(UUID idprocess, String id) throws HttpClientErrorException{
@@ -101,17 +98,12 @@ public class StockServices {
         LocalDateTime dateTime = LocalDateTime.now();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
-        logger.info("Chamando o método putSubAProduct() e efentuando a subtracao de um produto no estoque");
-
         HttpHeaders headers = new HttpHeaders();
         headers.set("x-qtde", String.valueOf(qtde));
-
-        logger.info("Valor da quantidade retirada {} ", qtde);
 
         Map<String, String> param = new HashMap<String, String>();
         param.put("id", id);
 
-        logger.info("O Id do produto é: {}", id);
         HttpEntity<StockDto> requestEntity = new HttpEntity<StockDto>(stock,headers);
         try {
             ResponseEntity<StockDto> response = restTemplate.exchange(url , HttpMethod.PUT, requestEntity,  StockDto.class);
@@ -120,12 +112,10 @@ public class StockServices {
             stock.setId(id);
             mediator.getNext(SUCESS_MSG,SERVICE_STOCK,dateTime );
             mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE_STOCK,dateTime );
-            logger.info("Retorno  {}", stock);
         }
         catch (final HttpClientErrorException e) {
 
             if(HttpStatus.NOT_FOUND.equals(e.getStatusCode())){
-                logger.info("==== Nāo há quantidade suficiente de produtos ===");
                 logger.error(e.getMessage() );
                 mediator.getNext(FAIL_MSG,SERVICE_STOCK,dateTime );
                 mediator.saveMicroserviceResult(FAIL_MSG,SERVICE_STOCK,dateTime );
@@ -154,32 +144,24 @@ public class StockServices {
         LocalDateTime dateTime = LocalDateTime.now();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
-        logger.info("Chamando o método putAddAProduct() e efentuando a subtracao de um produto no estoque");
-
         HttpHeaders headers = new HttpHeaders();
         headers.set("x-qtde", String.valueOf(qtde));
 
-        logger.info("Valor da quantidade retirada {} ", qtde);
-
         Map<String, String> param = new HashMap<String, String>();
         param.put("id", id);
-
-        logger.info("O Id do produto é: {} ", id);
-
 
         HttpEntity<StockDto> requestEntity = new HttpEntity<StockDto>(stock,headers);
         try{
             ResponseEntity<StockDto> response = restTemplate.exchange(url , HttpMethod.PUT, requestEntity,  StockDto.class);
             stock = response.getBody();
+            assert stock != null;
             stock.setId(id.split("/stock/")[1]);
             mediator.getNext("SUCESS",SERVICE_STOCK,dateTime );
             mediator.saveMicroserviceResult("SUCESS",SERVICE_STOCK,dateTime );
-            logger.info(String.valueOf(stock));
+
         }
         catch (final HttpClientErrorException e ){
             if(HttpStatus.NOT_FOUND.equals(e.getStatusCode())){
-                logger.info("Nāo tem o produto informado");
-                logger.error(e.getMessage());
                 mediator.getNext("FAIL",SERVICE_STOCK,dateTime );
             }
             else{

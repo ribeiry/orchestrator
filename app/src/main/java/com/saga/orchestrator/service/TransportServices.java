@@ -51,20 +51,13 @@ public class TransportServices {
         String apiUrl = serverUrl + "/calculator/" + issue.getTransport().getCep();
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
-        logger.info("Chamando o método calcula transport");
         try {
             //precisa testar com o método de pé
             String resultCalculate = restTemplate.getForObject(apiUrl, String.class);
-            logger.info("O valor do transport é  {} ", resultCalculate);
             mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
             mediator.saveMicroserviceResult(SUCESS_MSG, SERVICE, dateTime);
             return resultCalculate;
 
-        }
-        catch (HttpClientErrorException e) {
-            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
-            mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
-            logger.error(e.getMessage());
         }
         catch (Exception e){
             mediator.getNext(FAIL_MSG, SERVICE, dateTime);
@@ -81,7 +74,6 @@ public class TransportServices {
         TransportDto transportSendRequest = TransportDto.issueToTransport(issue);
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
-        logger.info("Chamando o método send tranport() e efetuando a leitura de pedidos");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -90,17 +82,12 @@ public class TransportServices {
         try {
             //precisa testar com o método de pé
             String responseSendTransport = restTemplate.postForObject(apiUrl, request, String.class);
-            logger.info("O id do transport é  {} ", responseSendTransport);
             mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
             mediator.saveMicroserviceResult(SUCESS_MSG, SERVICE, dateTime);
             mediator.saveOrechestratorResult(issue.getIdprocess(), 200, "Pedido concluído com sucesso", null);
 
-        } catch (HttpClientErrorException e) {
-        mediator.getNext(FAIL_MSG, SERVICE, dateTime);
-            mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
-            mediator.saveOrechestratorResult(issue.getIdprocess(), e.getStatusCode().value(), "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
-            logger.error(e.getMessage());
-        }catch (Exception e){
+        }
+        catch (Exception e){
             mediator.saveMicroserviceResult(FAIL_MSG,SERVICE,dateTime );
             mediator.saveOrechestratorResult(issue.getIdprocess(), 503, "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
             logger.error(e.getMessage());
@@ -115,7 +102,6 @@ public class TransportServices {
         String apiUrl = serverUrl + "/cancel/" + idTransport;
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
-        logger.info("Chamando o método send tranport() e efetuando a leitura de pedidos");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -123,14 +109,10 @@ public class TransportServices {
         HttpEntity<String> request = new HttpEntity<>(idTransport, headers);
         try {
             String response = restTemplate.postForObject(apiUrl, request, String.class);
-            logger.info("Pedido canecelado {} ", response);
             mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
             mediator.saveMicroserviceResult(SUCESS_MSG, SERVICE, dateTime);
-        } catch (HttpClientErrorException e) {
-            mediator.getNext(FAIL_MSG, SERVICE, dateTime);
-            mediator.saveMicroserviceResult(FAIL_MSG, SERVICE, dateTime);
-            logger.error(e.getMessage());
-        } catch (Exception e){
+        }
+        catch (Exception e){
             mediator.saveMicroserviceResult(FAIL_MSG,SERVICE,dateTime );
             logger.error(e.getMessage());
         }

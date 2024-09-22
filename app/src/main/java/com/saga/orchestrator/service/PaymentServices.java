@@ -39,38 +39,24 @@ public class PaymentServices {
         }
     }
 
-
-
-    //método de pagamento
     public void payOrder(Issue issue) {
 
         String apiUrl = serverUrl + "/pay";
         Payment PaymenttSendRequest = Payment.issueToPayment(issue);
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
-        logger.info("Chamando o método send tranport() e efetuando a leitura de pedidos");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<Payment> request = new HttpEntity<>(PaymenttSendRequest, headers);
         try {
-            //precisa testar com o método de pé
             String responseSendPayment = restTemplate.postForObject(apiUrl, request, String.class);
             List<Payment> payments = new ArrayList<>();
             issue.getPayment().setPaymentId(responseSendPayment);
-            logger.info("O id do pagamento é  " + responseSendPayment);
             mediator.saveMicroserviceResult(SUCESS_MSG, SERVICE_PAYMENTS, dateTime);
             mediator.getNext(SUCESS_MSG, SERVICE_PAYMENTS, dateTime);
 
-        }
-
-        catch (HttpClientErrorException e) {
-            mediator.saveMicroserviceResult(FAIL_MSG, SERVICE_PAYMENTS, dateTime);
-            mediator.saveOrechestratorResult(issue.getIdprocess(), e.getStatusCode().value(),
-                    "Microservice : " + SERVICE_PAYMENTS + "\n" + "Erro : Internal Server Error", e.getCause());
-            mediator.getNext(FAIL_MSG, SERVICE_PAYMENTS, dateTime);
-            logger.error(e.getMessage());
         }
         catch (Exception e ){
             mediator.saveMicroserviceResult(FAIL_MSG, SERVICE_PAYMENTS, dateTime);
@@ -88,7 +74,6 @@ public class PaymentServices {
         String apiUrl = serverUrl + "/cancel/" + idPayment;
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
-        logger.info("Chamando o método send tranport() e efetuando a leitura de pedidos");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -96,7 +81,6 @@ public class PaymentServices {
         HttpEntity<String> request = new HttpEntity<>(idPayment, headers);
         try {
             String response = restTemplate.postForObject(apiUrl, request, String.class);
-            logger.info("Pedido cancelado " + response);
             mediator.getNext(SUCESS_MSG, SERVICE_PAYMENTS, dateTime);
             mediator.saveMicroserviceResult(SUCESS_MSG, SERVICE_PAYMENTS, dateTime);
 
