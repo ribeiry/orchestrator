@@ -9,11 +9,9 @@ WORKDIR /app
 ENV JAVA_OPTS = "-Xmx1G -Xms512m -XX:+UseCGroupMemoryLimitForHeap+UseG1GC"
 
 # Copie o arquivo JAR do seu aplicativo para o contêiner
-COPY .mvn/ .mvn
+COPY ../app/.mvn/ .mvn
 
-COPY /app/mvnw  ./
-
-COPY /app/pom.xml ./
+COPY mvnw pom.xml ./
 
 # Atualize o gerenciador de pacotes e instale dependências necessárias
 RUN apt-get update && \
@@ -37,7 +35,7 @@ RUN aws --version
 
 RUN ./mvnw dependency:resolve
 
-COPY ./app/src ./src
+COPY src ./src
 
 EXPOSE 8080
 

@@ -13,29 +13,22 @@ spec:
   template:
     metadata:
       labels:
-        app: application
-    spec:
-      containers:
-      - name: orchestrator
-        image: orchestratorservices:v0.0.5
-        imagePullPolicy: IfNotPresent
-        env:
-          - name: ACCESS_KEY_ID
-            valueFrom:
-              secretKeyRef:
-                name: aws-secrets
-                key: aws_access_key_id
-          - name: SECRET_ACCESS_KEY
-            valueFrom:
-              secretKeyRef:
-                name: aws-secrets
-                key: aws_secret_access_key
-        volumeMounts:
-        - name: log
-          mountPath: /logs
-        ports:
-        - containerPort: 8080
-          protocol: TCP
-      volumes:
-      - name: log
-        emptyDir: {}
+        app: orchestrator
+        spec:
+          containers:
+            - name: orchestrator
+              image: docker.io/library/orchestrator:latest
+              imagePullPolicy: IfNotPresent
+              resources:
+                limits:
+                  memory: "1Gi"
+                  cpu: "500m"
+              volumeMounts:
+                - name: Log
+                  mountPath: /logs
+              ports:
+                - containerPort: 8080
+                  protocol: TCP
+          volumes:
+            - name: Log
+              emptyDir: {}

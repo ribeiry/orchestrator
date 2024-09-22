@@ -144,11 +144,24 @@ public class Communicator implements  ICommunicator{
     @CircuitBreaker(name = "orchestratorCircuit", fallbackMethod = "communicatorReturningSaveError")
     public boolean saveMicroserviceResult(String message, String service, LocalDateTime data) {
 
-        String hashKey = String.format("Communicator%s", service);
-        // SERVER_REDIS =  parameter.getParamValue(parameter.connect(),"urlRedis");
-        //PORT_REDIS  =  Integer.valueOf(parameter.getParamValue(parameter.connect(),"portRedis"));
+        String hashKey = String.format("Mediator%s", service);
+        SERVER_REDIS =  parameter.getParamValue(parameter.connect(),"urlRedis");
+        PORT_REDIS  =  Integer.valueOf(parameter.getParamValue(parameter.connect(),"portRedis"));
         logger.info("Server REDIS {} PORT REDIS {}", SERVER_REDIS, PORT_REDIS);
-        try(Jedis redis = redisConnect.configurationRedis(SERVER_REDIS, PORT_REDIS)){
+        Jedis redis = redisConnect.configurationRedis(SERVER_REDIS, PORT_REDIS);
+        logger.info("Iniciando a classe de proximo serivco");
+        if("SUCCESS".equalsIgnoreCase(message)) {
+            Map<String, String> hash = new HashMap<>();
+            logger.info("Servico: " + service + " ---- Mensagem: " + message + " Data e Hora: " + String.valueOf(data));
+            hash.put("service", service);
+            hash.put("message", message);
+            hash.put("DateTime", String.valueOf(data));
+
+            redis.hset(hashKey, hash);
+            logger.info(redis.hgetAll(hashKey).toString());
+            return true;
+        }
+        else {
             Map<String, String> hash = new HashMap<>();
             logger.info(NEXTCOMUNICATOR);
             hash.put(SERIVCECOMUNICATOR, service);

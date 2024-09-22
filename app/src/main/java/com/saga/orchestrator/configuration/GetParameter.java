@@ -34,7 +34,6 @@ public class GetParameter {
 
     public String getParamValue(@NotNull SsmClient ssmClient, String paramName){
         String valorParameter = "";
-        logger.info("Tentando consumir o parametro");
         try{
             GetParameterRequest parameterRequest = GetParameterRequest.builder()
                     .name(paramName)
@@ -45,10 +44,7 @@ public class GetParameter {
             ssmClient.close();
         }
         catch (SsmException ex){
-            logger.info(ex.getMessage().toString());
-        }
-        catch (Exception ex){
-            logger.info(ex.getMessage().toString());
+            logger.error(ex.getMessage().toString());
         }
         finally {
             return  valorParameter;
