@@ -8,6 +8,8 @@ import com.saga.orchestrator.model.OrchestratorResultDTO;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.exceptions.JedisException;
@@ -119,8 +121,6 @@ public class Communicator implements  ICommunicator{
         logger.info("Server REDIS {} PORT REDIS {}", SERVER_REDIS, PORT_REDIS);
         try(Jedis redis = redisConnect.configurationRedis(SERVER_REDIS, PORT_REDIS)){
             Map<String, String> hash = new HashMap<>();
-            logger.info("CodigoPedido: {0} ---- HttpStatusCode: {1} ---- HttpStatusMessage: {2} Cause: {3}" ,
-                                    idprocess,httpstatuscode,httpstatusmessage,cause);
             hash.put(CODIGOPEDIDOCOMUNICATOR, String.valueOf(idprocess));
             hash.put(HTTPCODECOMUNICATOR, String.valueOf(httpstatuscode));
             hash.put(HTTPMESSAGECOMUNICATOR, httpstatusmessage);
@@ -130,9 +130,6 @@ public class Communicator implements  ICommunicator{
             redis.hset(hashKey, hash);
             logger.info(redis.hgetAll(hashKey).toString());
 
-        }
-        catch (JedisException e){
-            logger.error(e.getMessage());
         }
         catch (Exception e){
             logger.error(e.getMessage());
@@ -149,13 +146,12 @@ public class Communicator implements  ICommunicator{
         PORT_REDIS  =  Integer.valueOf(parameter.getParamValue(parameter.connect(),"portRedis"));
         logger.info("Server REDIS {} PORT REDIS {}", SERVER_REDIS, PORT_REDIS);
         Jedis redis = redisConnect.configurationRedis(SERVER_REDIS, PORT_REDIS);
-        logger.info("Iniciando a classe de proximo serivco");
         if("SUCCESS".equalsIgnoreCase(message)) {
             Map<String, String> hash = new HashMap<>();
             logger.info("Servico: " + service + " ---- Mensagem: " + message + " Data e Hora: " + String.valueOf(data));
-            hash.put("service", service);
-            hash.put("message", message);
-            hash.put("DateTime", String.valueOf(data));
+            hash.put(SERIVCECOMUNICATOR, service);
+            hash.put(MESSAGECOMUNICATOR, message);
+            hash.put(DATETIMECOMUNICATOR, String.valueOf(data));
 
             redis.hset(hashKey, hash);
             logger.info(redis.hgetAll(hashKey).toString());
@@ -173,14 +169,6 @@ public class Communicator implements  ICommunicator{
             return SUCESSCOMUNICATOR.equalsIgnoreCase(message);
 
         }
-        catch (JedisException e){
-            logger.error(e.getMessage());
-        }
-        catch (Exception e){
-            logger.error(e.getMessage());
-
-        }
-        return false;
     }
 
     public boolean communicatorReturningError(Throwable throwable){
@@ -209,6 +197,7 @@ public class Communicator implements  ICommunicator{
 
     public OrchestratorResultDTO communicatorReturningOrchestratorError(Throwable throwable){
         OrchestratorResultDTO orchestratorResultDTO = new OrchestratorResultDTO();
+
 
         orchestratorResultDTO.setCodPedido(CODPEDIDOERRORCOMUNICATOR);
         orchestratorResultDTO.setHttpcause(HTTPCAUSECOMUNICATOR);

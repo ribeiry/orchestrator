@@ -2,25 +2,20 @@ package com.saga.orchestrator.service;
 
 
 import com.saga.orchestrator.model.Issue;
-import com.saga.orchestrator.model.Transport;
 import com.saga.orchestrator.mediator.Communicator;
 import com.saga.orchestrator.model.TransportDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
-import static com.saga.orchestrator.constant.Constant.FAIL_MSG;
-import static com.saga.orchestrator.constant.Constant.SUCESS_MSG;
+import static com.saga.orchestrator.constant.Constant.*;
 
 @Service
 public class TransportServices {
@@ -54,8 +49,8 @@ public class TransportServices {
         try {
             //precisa testar com o método de pé
             String resultCalculate = restTemplate.getForObject(apiUrl, String.class);
-            mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
-            mediator.saveMicroserviceResult(SUCESS_MSG, SERVICE, dateTime);
+            mediator.getNext(SUCCESS_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(SUCCESS_MSG, SERVICE, dateTime);
             return resultCalculate;
 
         }
@@ -82,14 +77,16 @@ public class TransportServices {
         try {
             //precisa testar com o método de pé
             String responseSendTransport = restTemplate.postForObject(apiUrl, request, String.class);
-            mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
-            mediator.saveMicroserviceResult(SUCESS_MSG, SERVICE, dateTime);
-            mediator.saveOrechestratorResult(issue.getIdprocess(), 200, "Pedido concluído com sucesso", null);
+            mediator.getNext(SUCCESS_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(SUCCESS_MSG, SERVICE, dateTime);
+            mediator.saveOrechestratorResult(issue.getIdprocess(), 200,
+                    SUCCESSTRANSPORT, null);
 
         }
         catch (Exception e){
             mediator.saveMicroserviceResult(FAIL_MSG,SERVICE,dateTime );
-            mediator.saveOrechestratorResult(issue.getIdprocess(), 503, "Microservice : " + SERVICE + "\n" + "Erro : Internal Server Error", e.getCause());
+            mediator.saveOrechestratorResult(issue.getIdprocess(), 503,
+                    MICROSERVICE + SERVICE + INTERNALSERVERERROR, e.getCause());
             logger.error(e.getMessage());
         }
 
@@ -109,8 +106,8 @@ public class TransportServices {
         HttpEntity<String> request = new HttpEntity<>(idTransport, headers);
         try {
             String response = restTemplate.postForObject(apiUrl, request, String.class);
-            mediator.getNext(SUCESS_MSG, SERVICE, dateTime);
-            mediator.saveMicroserviceResult(SUCESS_MSG, SERVICE, dateTime);
+            mediator.getNext(SUCCESS_MSG, SERVICE, dateTime);
+            mediator.saveMicroserviceResult(SUCCESS_MSG, SERVICE, dateTime);
         }
         catch (Exception e){
             mediator.saveMicroserviceResult(FAIL_MSG,SERVICE,dateTime );

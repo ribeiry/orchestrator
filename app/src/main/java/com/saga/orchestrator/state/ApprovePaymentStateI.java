@@ -13,8 +13,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.saga.orchestrator.constant.Constant.FAIL_MSG;
-import static com.saga.orchestrator.constant.Constant.SERVICE_PAYMENTS;
+import static com.saga.orchestrator.constant.Constant.*;
 
 @Component
 public class ApprovePaymentStateI implements IOrderState {
@@ -26,7 +25,6 @@ public class ApprovePaymentStateI implements IOrderState {
 
         if(orderState.isValidaPrev()) {
             TransportServices transportServices = new TransportServices();
-            //TODO Tratar a excecao
             try {
                 Double transportValue = Double.parseDouble(transportServices.calculateTransport(issue));
                 Double somaProduct = (double) 0;
@@ -43,7 +41,7 @@ public class ApprovePaymentStateI implements IOrderState {
                 //Efetua pgamento do pedido
                 PaymentServices paymentServices = new PaymentServices();
                 paymentServices.payOrder(issue);
-                if ("SUCCESS".equals(mediator.getStatus(SERVICE_PAYMENTS).getMessage())) {
+                if (SUCCESS_MSG.equals(mediator.getStatus(SERVICE_PAYMENTS).getMessage())) {
                     orderState.setState(new TransportStateI());
                 }
                 else {

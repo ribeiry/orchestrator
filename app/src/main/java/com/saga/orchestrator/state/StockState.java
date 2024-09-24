@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static com.saga.orchestrator.constant.Constant.SERVICE_STOCK;
+import static com.saga.orchestrator.constant.Constant.SUCCESS_MSG;
 
 @Component
 public class StockState implements  IOrderState{
@@ -32,11 +33,11 @@ public class StockState implements  IOrderState{
             List<Product> products = issue.getOrder().getProdutos();
             for (Product product : products) {
                 stockServices.subAProduct(issue.getIdprocess(), product.getIdProduto(), product.getQuantidade());
-                if (!"SUCCESS".equals(mediator.getStatus(SERVICE_STOCK).getMessage())) {
+                if (!SUCCESS_MSG.equals(mediator.getStatus(SERVICE_STOCK).getMessage())) {
                     break;
                 }
             }
-            if ("SUCCESS".equals(mediator.getStatus(SERVICE_STOCK).getMessage())) {
+            if (SUCCESS_MSG.equals(mediator.getStatus(SERVICE_STOCK).getMessage())) {
                 orderState.setState(new ApprovePaymentStateI());
             }
             else{

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import static com.saga.orchestrator.constant.Constant.SERVICE_ORDER;
+import static com.saga.orchestrator.constant.Constant.SUCCESS_MSG;
 
 @Service
 public class CreateOrderStateI implements IOrderState {
@@ -25,7 +26,7 @@ public class CreateOrderStateI implements IOrderState {
             orderServices = new  OrderServices();
             String codPedido = orderServices.CreateOrder(issue.getOrder(), issue.getIdprocess());
             issue.getOrder().setCodPedido(codPedido);
-            if ("SUCCESS".equals(mediator.getStatus(SERVICE_ORDER).getMessage())) {
+            if (SUCCESS_MSG.equals(mediator.getStatus(SERVICE_ORDER).getMessage())) {
                 orderState.setState(new StockState());
             }
             else{

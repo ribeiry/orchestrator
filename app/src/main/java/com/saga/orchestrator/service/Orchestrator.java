@@ -21,8 +21,7 @@ public class Orchestrator {
         OrderState orderState = new OrderState();
         int i = 0;
         while (orderState.getState() != null){
-           logger.info("Getting % state", i );
-           logger.info(orderState.printStatus());
+            logger.info(orderState.printStatus());
            orderState.nextState(issue);
         }
         return mediator.getOrechestratorResult(issue.getIdprocess().toString());

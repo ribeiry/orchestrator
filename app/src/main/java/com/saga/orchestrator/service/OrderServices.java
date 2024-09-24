@@ -51,8 +51,8 @@ public class OrderServices {
             ResponseEntity<List> response = restTemplate.exchange(serverUrl, HttpMethod.GET, request, List.class);
             List order;
             order = response.getBody();
-            mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE_ORDER,dateTime);
-            mediator.getNext(SUCESS_MSG,SERVICE_ORDER,dateTime);
+            mediator.saveMicroserviceResult(SUCCESS_MSG,SERVICE_ORDER,dateTime);
+            mediator.getNext(SUCCESS_MSG,SERVICE_ORDER,dateTime);
             for (int i = 0; i < Objects.requireNonNull(order).size(); i++) {
                 Object pedido = order.get(i);
                 if (pedido instanceof LinkedHashMap<?, ?> linkedHashMap) {
@@ -81,8 +81,8 @@ public class OrderServices {
             ResponseEntity<OrderDto> response = restTemplate.exchange(url, HttpMethod.GET, request, OrderDto.class);
             OrderDto order = response.getBody();
             logger.info(String.valueOf(order));
-            mediator.getNext(SUCESS_MSG,SERVICE_ORDER,dateTime );
-            mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE_ORDER,dateTime );
+            mediator.getNext(SUCCESS_MSG,SERVICE_ORDER,dateTime );
+            mediator.saveMicroserviceResult(SUCCESS_MSG,SERVICE_ORDER,dateTime );
 
         }
         catch (HttpClientErrorException e){
@@ -105,14 +105,14 @@ public class OrderServices {
             String response =  restTemplate.exchange(serverUrl, HttpMethod.POST, entity,String.class).getBody();
             assert response != null;
             response = response.replaceAll("\"", "");
-            mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE_ORDER,dateTime);
-            mediator.getNext(SUCESS_MSG,SERVICE_ORDER,dateTime);
+            mediator.saveMicroserviceResult(SUCCESS_MSG,SERVICE_ORDER,dateTime);
+            mediator.getNext(SUCCESS_MSG,SERVICE_ORDER,dateTime);
             return  response;
         }
         catch (Exception e){
             mediator.saveMicroserviceResult(FAIL_MSG, SERVICE_ORDER, dateTime);
             mediator.saveOrechestratorResult(idprocess, 503,
-                    "Microservice : " + SERVICE_ORDER + "\n" + "Erro : Internal Server Error", e.getCause());
+                    MICROSERVICE + SERVICE_ORDER + INTERNALSERVERERROR, e.getCause());
             mediator.getNext(FAIL_MSG, SERVICE_ORDER, dateTime);
             logger.error(e.getMessage());
             return null;
@@ -135,8 +135,8 @@ public class OrderServices {
         try {
             ResponseEntity<OrderDto> response = restTemplate.exchange(url , HttpMethod.PUT, requestEntity,  OrderDto.class);
             orderDto = response.getBody();
-            mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE_ORDER,dateTime );
-            mediator.getNext(SUCESS_MSG,SERVICE_ORDER,dateTime );
+            mediator.saveMicroserviceResult(SUCCESS_MSG,SERVICE_ORDER,dateTime );
+            mediator.getNext(SUCCESS_MSG,SERVICE_ORDER,dateTime );
             logger.info("Retorno %s",orderDto);
         }
         catch (final HttpClientErrorException e) {

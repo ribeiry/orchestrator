@@ -36,8 +36,8 @@ public class StockServices {
         StockDto stock = new StockDto();
         try{
             stock = restTemplate.getForObject(url, StockDto.class);
-            mediator.getNext(SUCESS_MSG,SERVICE_STOCK,dateTime );
-            mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE_STOCK,dateTime );
+            mediator.getNext(SUCCESS_MSG,SERVICE_STOCK,dateTime );
+            mediator.saveMicroserviceResult(SUCCESS_MSG,SERVICE_STOCK,dateTime );
         }
         catch (final  HttpClientErrorException e){
 
@@ -59,11 +59,11 @@ public class StockServices {
         String url = String.format("%s/%s", serverUrl,id);
 
         try{
-            logger.info("Chamando o método getAProduct() e efetuando a leitura de um produto no estoque");
+            logger.info(CALLSTOCKSERVICES);
             StockDto product = restTemplate.getForObject(url, StockDto.class);
             logger.info(String.valueOf(product));
-            mediator.getNext(SUCESS_MSG,SERVICE_STOCK,dateTime);
-            mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE_STOCK,dateTime);
+            mediator.getNext(SUCCESS_MSG,SERVICE_STOCK,dateTime);
+            mediator.saveMicroserviceResult(SUCCESS_MSG,SERVICE_STOCK,dateTime);
         }
         catch (final  HttpClientErrorException e){
 
@@ -72,7 +72,7 @@ public class StockServices {
                 mediator.saveMicroserviceResult(FAIL_MSG,SERVICE_STOCK,dateTime);
             }
             mediator.saveOrechestratorResult(idprocess, e.getStatusCode().value(),
-                    SERVICE_STOCK + "==== Nāo há quantidade suficiente de produtos ===", e.getCause());
+                    SERVICE_STOCK + STOCKERROR, e.getCause());
         }
     }
 
@@ -110,8 +110,8 @@ public class StockServices {
             stock = response.getBody();
             HttpStatusCode resp = response.getStatusCode();
             stock.setId(id);
-            mediator.getNext(SUCESS_MSG,SERVICE_STOCK,dateTime );
-            mediator.saveMicroserviceResult(SUCESS_MSG,SERVICE_STOCK,dateTime );
+            mediator.getNext(SUCCESS_MSG,SERVICE_STOCK,dateTime );
+            mediator.saveMicroserviceResult(SUCCESS_MSG,SERVICE_STOCK,dateTime );
         }
         catch (final HttpClientErrorException e) {
 
@@ -120,19 +120,19 @@ public class StockServices {
                 mediator.getNext(FAIL_MSG,SERVICE_STOCK,dateTime );
                 mediator.saveMicroserviceResult(FAIL_MSG,SERVICE_STOCK,dateTime );
                 mediator.saveOrechestratorResult(idprocess, e.getStatusCode().value(),
-                        SERVICE_STOCK + "==== Nāo há quantidade suficiente de produtos ===", e.getCause());
+                        SERVICE_STOCK +  STOCKERROR, e.getCause());
             }
             else{
                 logger.error(e.getMessage());
                 mediator.saveOrechestratorResult(idprocess, 503,
-                        "Microservice : " + SERVICE_STOCK + "\n" + "Erro : Internal Server Error", e.getCause());
+                        MICROSERVICE+ SERVICE_STOCK +INTERNALSERVERERROR, e.getCause());
             }
         }
         catch (Exception e){
             mediator.getNext(FAIL_MSG,SERVICE_STOCK,dateTime );
             mediator.saveMicroserviceResult(FAIL_MSG,SERVICE_STOCK,dateTime );
             mediator.saveOrechestratorResult(idprocess, 503,
-                    "Microservice : " + SERVICE_STOCK + "\n" + "Erro : Internal Server Error", e.getCause());
+                    MICROSERVICE+ SERVICE_STOCK + INTERNALSERVERERROR, e.getCause());
             logger.error(e.getMessage());
         }
     }
@@ -156,18 +156,18 @@ public class StockServices {
             stock = response.getBody();
             assert stock != null;
             stock.setId(id.split("/stock/")[1]);
-            mediator.getNext("SUCESS",SERVICE_STOCK,dateTime );
-            mediator.saveMicroserviceResult("SUCESS",SERVICE_STOCK,dateTime );
+            mediator.getNext(SUCCESS_MSG,SERVICE_STOCK,dateTime );
+            mediator.saveMicroserviceResult(SUCCESS_MSG,SERVICE_STOCK,dateTime );
 
         }
         catch (final HttpClientErrorException e ){
             if(HttpStatus.NOT_FOUND.equals(e.getStatusCode())){
-                mediator.getNext("FAIL",SERVICE_STOCK,dateTime );
+                mediator.getNext(FAIL_MSG,SERVICE_STOCK,dateTime );
             }
             else{
                 logger.error(e.getMessage());
             }
-            mediator.saveMicroserviceResult("FAIL",SERVICE_STOCK,dateTime );
+            mediator.saveMicroserviceResult(FAIL_MSG,SERVICE_STOCK,dateTime );
         }
 
     }

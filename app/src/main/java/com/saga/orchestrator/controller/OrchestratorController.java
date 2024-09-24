@@ -23,14 +23,12 @@ public class OrchestratorController {
 
         issue.setIdprocess(UUID.randomUUID());
         OrchestratorResultDTO orchestratorResultDTO = orchestrator.callFunctions(issue);
+        HttpStatus status = HttpStatus.valueOf(orchestratorResultDTO.getHttpstatuscod());
 
-        if(orchestratorResultDTO != null) {
-            if (orchestratorResultDTO.getHttpstatuscod().equals("200")) {
-                return  ResponseEntity.status(HttpStatus.OK).body(orchestratorResultDTO.getCodPedido());
-            } else {
-                return ResponseEntity.status(Integer.valueOf(orchestratorResultDTO.getHttpstatuscod())).body(orchestratorResultDTO.getHttpmessage());
-            }
+        if (status.is2xxSuccessful()) {
+            return ResponseEntity.status(HttpStatus.OK).body(orchestratorResultDTO.getCodPedido());
+        } else {
+            return ResponseEntity.status(Integer.valueOf(orchestratorResultDTO.getHttpstatuscod())).body(orchestratorResultDTO.getHttpmessage());
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(INTERNAL_SERVER_ERROR);
     }
 }

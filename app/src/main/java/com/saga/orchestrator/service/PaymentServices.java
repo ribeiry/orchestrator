@@ -54,14 +54,14 @@ public class PaymentServices {
             String responseSendPayment = restTemplate.postForObject(apiUrl, request, String.class);
             List<Payment> payments = new ArrayList<>();
             issue.getPayment().setPaymentId(responseSendPayment);
-            mediator.saveMicroserviceResult(SUCESS_MSG, SERVICE_PAYMENTS, dateTime);
-            mediator.getNext(SUCESS_MSG, SERVICE_PAYMENTS, dateTime);
+            mediator.saveMicroserviceResult(SUCCESS_MSG, SERVICE_PAYMENTS, dateTime);
+            mediator.getNext(SUCCESS_MSG, SERVICE_PAYMENTS, dateTime);
 
         }
         catch (Exception e ){
             mediator.saveMicroserviceResult(FAIL_MSG, SERVICE_PAYMENTS, dateTime);
             mediator.saveOrechestratorResult(issue.getIdprocess(), 503,
-                    "Microservice : " + SERVICE_PAYMENTS + "\n" + "Erro : Internal Server Error", e.getCause());
+                    MICROSERVICE + SERVICE_PAYMENTS + INTERNALSERVERERROR, e.getCause());
             mediator.getNext(FAIL_MSG, SERVICE_PAYMENTS, dateTime);
             logger.error(e.getMessage());
         }
@@ -81,8 +81,8 @@ public class PaymentServices {
         HttpEntity<String> request = new HttpEntity<>(idPayment, headers);
         try {
             String response = restTemplate.postForObject(apiUrl, request, String.class);
-            mediator.getNext(SUCESS_MSG, SERVICE_PAYMENTS, dateTime);
-            mediator.saveMicroserviceResult(SUCESS_MSG, SERVICE_PAYMENTS, dateTime);
+            mediator.getNext(SUCCESS_MSG, SERVICE_PAYMENTS, dateTime);
+            mediator.saveMicroserviceResult(SUCCESS_MSG, SERVICE_PAYMENTS, dateTime);
 
         } catch (HttpClientErrorException e) {
             mediator.saveMicroserviceResult(FAIL_MSG, SERVICE_PAYMENTS, dateTime);

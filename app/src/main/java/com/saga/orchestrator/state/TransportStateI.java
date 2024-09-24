@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import static com.saga.orchestrator.constant.Constant.SERVICE_ORDER;
+import static com.saga.orchestrator.constant.Constant.*;
 
 @Component
 public class TransportStateI implements IOrderState {
@@ -21,8 +21,8 @@ public class TransportStateI implements IOrderState {
         if(orderState.isValidaPrev()) {
             TransportServices transportServices = new TransportServices();
             transportServices.sendToTransport(issue);
-            logger.info("O pedido já saiu para entrega");
-            if ("FAIL".equals(mediator.getStatus(SERVICE_ORDER).getMessage())) {
+            logger.info(ORDERSUCCESSDELVIERY);
+            if (FAIL_MSG.equals(mediator.getStatus(SERVICE_ORDER).getMessage())) {
                 this.prevState(orderState, issue);
             }
             else {
