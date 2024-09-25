@@ -24,6 +24,9 @@ public class TransportServices {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Communicator mediator = new Communicator();
     private static final String SERVICE = "TRANSPORT";
+    private static final String CALCULATOR = "/calculator/";
+    private static final String SEND       = "/send";
+    private static final String CANCEL     = "/cancel/";
 
 
 
@@ -43,7 +46,7 @@ public class TransportServices {
 
     public String calculateTransport(Issue issue) {
 
-        String apiUrl = serverUrl + "/calculator/" + issue.getTransport().getCep();
+        String apiUrl = serverUrl + CALCULATOR + issue.getTransport().getCep();
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
         try {
@@ -65,7 +68,7 @@ public class TransportServices {
 
     public void sendToTransport(Issue issue) {
 
-        String apiUrl = serverUrl + "/send";
+        String apiUrl = serverUrl + SEND;
         TransportDto transportSendRequest = TransportDto.issueToTransport(issue);
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
@@ -96,7 +99,7 @@ public class TransportServices {
     //Método de cancelamento
     public void cancelTransport(String idTransport) {
 
-        String apiUrl = serverUrl + "/cancel/" + idTransport;
+        String apiUrl = serverUrl + CANCEL + idTransport;
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
 

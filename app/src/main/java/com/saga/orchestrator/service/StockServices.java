@@ -29,6 +29,7 @@ public class StockServices {
     private Communicator mediator = new Communicator();
     private  String serverUrl;
 
+
     public StockDto getAllStock() throws HttpClientErrorException{
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();

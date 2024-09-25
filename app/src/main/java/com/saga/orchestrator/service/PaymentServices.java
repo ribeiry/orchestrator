@@ -25,6 +25,8 @@ public class PaymentServices {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Communicator mediator = new Communicator();
     private String serverUrl;
+    private static final String pay = "/pay";
+    private static final String cancel = "/cancel/";
 
     public PaymentServices() {
         try {
@@ -41,7 +43,7 @@ public class PaymentServices {
 
     public void payOrder(Issue issue) {
 
-        String apiUrl = serverUrl + "/pay";
+        String apiUrl = serverUrl + pay;
         Payment PaymenttSendRequest = Payment.issueToPayment(issue);
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
@@ -71,7 +73,7 @@ public class PaymentServices {
 
     public void cancelPayment(String idPayment){
 
-        String apiUrl = serverUrl + "/cancel/" + idPayment;
+        String apiUrl = serverUrl + cancel + idPayment;
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
 
