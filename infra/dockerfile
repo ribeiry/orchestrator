@@ -35,7 +35,7 @@ RUN aws --version
 
 RUN ./mvnw dependency:resolve
 
-COPY src ./src
+COPY ./src ./src
 
 EXPOSE 8080
 

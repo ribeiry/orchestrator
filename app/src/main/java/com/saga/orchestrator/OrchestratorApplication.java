@@ -8,6 +8,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @EnableAutoConfiguration
 public class OrchestratorApplication {
 
+	//TODO: Testar circuit Breaker
+	//TODO: Fazer testes de CARGA
+
 	public static void main(String[] args)  {
 		SpringApplication.run(OrchestratorApplication.class, args);
 

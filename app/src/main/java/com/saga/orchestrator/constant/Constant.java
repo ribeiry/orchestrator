@@ -17,7 +17,8 @@ public class Constant {
     public static final String DATETIMECOMUNICATOR       = "DateTime";
     public static final String SUCESSCOMUNICATOR         = "SUCCESS";
     public static final String CODIGOPEDIDOCOMUNICATOR   = "CodigoPedido";
-    public static final String HTTPCODECOMUNICATOR       = "HttpStatusCode";
+    public static final Integer HTTPCODECOMUNICATOR      = 500;
+    public static final String HTTPCODEERRORTEXT         = "HttpCode: ";
     public static final String HTTPMESSAGECOMUNICATOR    = "HttpStatusMessage";
     public static final String CAUSEMESSAGECOMUNICATOR   = "Cause";
     public static final String ERRORMESSAGECOMUNICATOR   = "ERROR RETORNO VIA CIRCUITBREAKER";

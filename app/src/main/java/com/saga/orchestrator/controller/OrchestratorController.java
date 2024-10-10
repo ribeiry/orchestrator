@@ -28,7 +28,8 @@ public class OrchestratorController {
         if (status.is2xxSuccessful()) {
             return ResponseEntity.status(HttpStatus.OK).body(orchestratorResultDTO.getCodPedido());
         } else {
-            return ResponseEntity.status(Integer.valueOf(orchestratorResultDTO.getHttpstatuscod())).body(orchestratorResultDTO.getHttpmessage());
+                return ResponseEntity.status(Integer.valueOf(orchestratorResultDTO.getHttpstatuscod())).
+                    body(orchestratorResultDTO.getHttpcause());
         }
     }
 }

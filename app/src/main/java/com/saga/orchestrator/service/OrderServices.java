@@ -4,6 +4,7 @@ package com.saga.orchestrator.service;
 import com.saga.orchestrator.mediator.Communicator;
 import com.saga.orchestrator.model.OrderDto;
 import com.saga.orchestrator.model.Order;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,6 +94,7 @@ public class OrderServices {
 
     }
 
+    @CircuitBreaker(name = "orchestratorCircuit", fallbackMethod = "errorCreateOrder")
     public  String CreateOrder(Order order, UUID idprocess) throws HttpClientErrorException{
         RestTemplate restTemplate = new RestTemplate();
         LocalDateTime dateTime = LocalDateTime.now();
@@ -154,4 +156,10 @@ public class OrderServices {
 
     }
 
+
+    public String errorCreateOrder(Throwable throwable, Order order, UUID idprocess){
+
+        logger.info("Error Fallback");
+        return "errorReturn";
+    }
 }

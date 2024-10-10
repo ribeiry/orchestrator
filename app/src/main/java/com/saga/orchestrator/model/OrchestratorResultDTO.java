@@ -3,7 +3,7 @@ package com.saga.orchestrator.model;
 public class OrchestratorResultDTO {
 
     private String codPedido;
-    private String httpstatuscod;
+    private Integer httpstatuscod;
     private String httpmessage;
 
     private String httpcause;
@@ -16,11 +16,11 @@ public class OrchestratorResultDTO {
         this.codPedido = codPedido;
     }
 
-    public String getHttpstatuscod() {
+    public Integer getHttpstatuscod() {
         return httpstatuscod;
     }
 
-    public void setHttpstatuscod(String httpstatuscod) {
+    public void setHttpstatuscod(Integer httpstatuscod) {
         this.httpstatuscod = httpstatuscod;
     }
 

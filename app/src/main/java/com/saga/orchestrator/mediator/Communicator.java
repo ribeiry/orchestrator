@@ -25,7 +25,8 @@ public class Communicator implements  ICommunicator{
     static GetParameter parameter = new GetParameter();
     private final Logger logger = LoggerFactory.getLogger(getClass());
     RedisConfig redisConnect = new RedisConfig();
-    private static String SERVER_REDIS =  "192.168.105.4";
+   // private static String SERVER_REDIS =  "192.168.105.4";
+   private static String SERVER_REDIS =  "127.0.0.1";
     private static Integer PORT_REDIS   =  6379 ;
 
 
@@ -59,37 +60,50 @@ public class Communicator implements  ICommunicator{
 
     @CircuitBreaker(name = "orchestratorCircuit", fallbackMethod = "communicatorReturningStatusError")
     public CommunicatorDTO getStatus(String service){
-
         CommunicatorDTO communicatorDTO = new CommunicatorDTO();
         logger.info("Server REDIS {} PORT REDIS {}", SERVER_REDIS, PORT_REDIS);
-        Jedis redis = redisConnect.configurationRedis(SERVER_REDIS, PORT_REDIS);
-        String hashKey = String.format("Mediator%s", service);
-        Map<String, String> result = redis.hgetAll(hashKey);
+        try{
+            Jedis redis = redisConnect.configurationRedis(SERVER_REDIS, PORT_REDIS);
+            String hashKey = String.format("Mediator%s", service);
+            Map<String, String> result = redis.hgetAll(hashKey);
 
-        communicatorDTO.setService(result.get(SERIVCECOMUNICATOR));
-        communicatorDTO.setMessage(result.get(MESSAGECOMUNICATOR));
-        communicatorDTO.setDateTime(LocalDateTime.parse(result.get(DATETIMECOMUNICATOR)));
+            communicatorDTO.setService(result.get(SERIVCECOMUNICATOR));
+            communicatorDTO.setMessage(result.get(MESSAGECOMUNICATOR));
+            communicatorDTO.setDateTime(LocalDateTime.parse(result.get(DATETIMECOMUNICATOR)));
 
-        return  communicatorDTO;
+            return  communicatorDTO;
+        }
+        catch (Exception ex)
+        {
+            logger.error(ex.getMessage());
+        }
 
+        return communicatorDTO;
     }
 
     @CircuitBreaker(name= "orchestratorCircuit",fallbackMethod = "communicatorReturningOrchestratorError")
     public OrchestratorResultDTO getOrechestratorResult(String codigoPedido){
         OrchestratorResultDTO orchestratorResultDTO = new OrchestratorResultDTO();
         logger.info("Server REDIS {} PORT REDIS {}", SERVER_REDIS, PORT_REDIS);
-        Jedis redis = redisConnect.configurationRedis(SERVER_REDIS, PORT_REDIS);
-        String hashKey = String.format("Mediator%s", codigoPedido);
+        try{
+            Jedis redis = redisConnect.configurationRedis(SERVER_REDIS, PORT_REDIS);
+            String hashKey = String.format("Mediator%s", codigoPedido);
 
-        Map<String, String> result = redis.hgetAll(hashKey);
+            Map<String, String> result = redis.hgetAll(hashKey);
 
-        orchestratorResultDTO.setCodPedido(result.get(CODIGOPEDIDOCOMUNICATOR));
-        orchestratorResultDTO.setHttpstatuscod(result.get(HTTPCODECOMUNICATOR));
-        orchestratorResultDTO.setHttpmessage(result.get(HTTPMESSAGECOMUNICATOR));
-        if(result.get(CAUSEMESSAGECOMUNICATOR) != null){
-            orchestratorResultDTO.setHttpcause(result.get(CAUSEMESSAGECOMUNICATOR));
+            orchestratorResultDTO.setCodPedido(result.get(CODIGOPEDIDOCOMUNICATOR));
+            orchestratorResultDTO.setHttpstatuscod(Integer.valueOf(result.get(HTTPCODECOMUNICATOR)));
+            orchestratorResultDTO.setHttpmessage(result.get(HTTPMESSAGECOMUNICATOR));
+            if(result.get(CAUSEMESSAGECOMUNICATOR) != null){
+                orchestratorResultDTO.setHttpcause(result.get(CAUSEMESSAGECOMUNICATOR));
+            }
         }
+        catch (Exception ex){
+            logger.error(ex.getMessage());
 
+            orchestratorResultDTO.setHttpstatuscod(HTTPCODECOMUNICATOR);
+
+        }
         return  orchestratorResultDTO;
 
     }
@@ -115,14 +129,15 @@ public class Communicator implements  ICommunicator{
 
     @Override
     @CircuitBreaker(name = "orchestratorCircuit", fallbackMethod = "communicatorReturningSaveError")
-    public void saveOrechestratorResult(UUID idprocess, int httpstatuscode, String httpstatusmessage, Throwable cause) {
+    public void saveOrechestratorResult(UUID idprocess, int httpstatuscode,
+                                        String httpstatusmessage, Throwable cause) {
 
         String hashKey = String.format("Mediator%s", idprocess);
         logger.info("Server REDIS {} PORT REDIS {}", SERVER_REDIS, PORT_REDIS);
         try(Jedis redis = redisConnect.configurationRedis(SERVER_REDIS, PORT_REDIS)){
             Map<String, String> hash = new HashMap<>();
             hash.put(CODIGOPEDIDOCOMUNICATOR, String.valueOf(idprocess));
-            hash.put(HTTPCODECOMUNICATOR, String.valueOf(httpstatuscode));
+            hash.put(HTTPCODEERRORTEXT, String.valueOf(httpstatuscode));
             hash.put(HTTPMESSAGECOMUNICATOR, httpstatusmessage);
             if (cause != null )
                 hash.put(CAUSEMESSAGECOMUNICATOR, cause.getMessage());
@@ -138,37 +153,43 @@ public class Communicator implements  ICommunicator{
     }
 
     @Override
-    @CircuitBreaker(name = "orchestratorCircuit", fallbackMethod = "communicatorReturningSaveError")
+    @CircuitBreaker(name = "orchestratorCircuit", fallbackMethod = "communicatorReturningError")
     public boolean saveMicroserviceResult(String message, String service, LocalDateTime data) {
 
         String hashKey = String.format("Mediator%s", service);
-        SERVER_REDIS =  parameter.getParamValue(parameter.connect(),"urlRedis");
-        PORT_REDIS  =  Integer.valueOf(parameter.getParamValue(parameter.connect(),"portRedis"));
+        //SERVER_REDIS =  parameter.getParamValue(parameter.connect(),"urlRedis");
+        //PORT_REDIS  =  Integer.valueOf(parameter.getParamValue(parameter.connect(),"portRedis"));
         logger.info("Server REDIS {} PORT REDIS {}", SERVER_REDIS, PORT_REDIS);
         Jedis redis = redisConnect.configurationRedis(SERVER_REDIS, PORT_REDIS);
-        if("SUCCESS".equalsIgnoreCase(message)) {
-            Map<String, String> hash = new HashMap<>();
-            logger.info("Servico: " + service + " ---- Mensagem: " + message + " Data e Hora: " + String.valueOf(data));
-            hash.put(SERIVCECOMUNICATOR, service);
-            hash.put(MESSAGECOMUNICATOR, message);
-            hash.put(DATETIMECOMUNICATOR, String.valueOf(data));
+        try {
+            if("SUCCESS".equalsIgnoreCase(message)) {
+                Map<String, String> hash = new HashMap<>();
+                logger.info("Servico: " + service + " ---- Mensagem: " + message + " Data e Hora: " + String.valueOf(data));
+                hash.put(SERIVCECOMUNICATOR, service);
+                hash.put(MESSAGECOMUNICATOR, message);
+                hash.put(DATETIMECOMUNICATOR, String.valueOf(data));
 
-            redis.hset(hashKey, hash);
-            logger.info(redis.hgetAll(hashKey).toString());
-            return true;
+                redis.hset(hashKey, hash);
+                logger.info(redis.hgetAll(hashKey).toString());
+                return true;
+            }
+            else {
+                Map<String, String> hash = new HashMap<>();
+                logger.info(NEXTCOMUNICATOR);
+                hash.put(SERIVCECOMUNICATOR, service);
+                hash.put(MESSAGECOMUNICATOR, message);
+                hash.put(DATETIMECOMUNICATOR, String.valueOf(data));
+
+                redis.hset(hashKey, hash);
+                logger.info(redis.hgetAll(hashKey).toString());
+                return SUCESSCOMUNICATOR.equalsIgnoreCase(message);
+
+            }
         }
-        else {
-            Map<String, String> hash = new HashMap<>();
-            logger.info(NEXTCOMUNICATOR);
-            hash.put(SERIVCECOMUNICATOR, service);
-            hash.put(MESSAGECOMUNICATOR, message);
-            hash.put(DATETIMECOMUNICATOR, String.valueOf(data));
-
-            redis.hset(hashKey, hash);
-            logger.info(redis.hgetAll(hashKey).toString());
-            return SUCESSCOMUNICATOR.equalsIgnoreCase(message);
-
+        catch (Exception ex){
+            logger.error(ex.getMessage());
         }
+        return  false;
     }
 
     public boolean communicatorReturningError(Throwable throwable){
@@ -201,7 +222,7 @@ public class Communicator implements  ICommunicator{
 
         orchestratorResultDTO.setCodPedido(CODPEDIDOERRORCOMUNICATOR);
         orchestratorResultDTO.setHttpcause(HTTPCAUSECOMUNICATOR);
-        orchestratorResultDTO.setHttpstatuscod("500");
+        orchestratorResultDTO.setHttpstatuscod(500);
 
         return  orchestratorResultDTO;
     }
