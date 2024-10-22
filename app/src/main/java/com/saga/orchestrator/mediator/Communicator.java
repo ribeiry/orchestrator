@@ -192,7 +192,7 @@ public class Communicator implements  ICommunicator{
         return  false;
     }
 
-    public boolean communicatorReturningError(Throwable throwable){
+    public boolean communicatorReturningError(String message, String service, LocalDateTime data,Throwable throwable){
         logger.error(RETURNINGERROR);
         logger.error(ERRORCONNECTREDIS);
 

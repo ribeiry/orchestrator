@@ -26,7 +26,7 @@ public class CircuitBreakerConfiguration {
                 .waitDurationInOpenState(Duration.ofMillis(6000)) // O tempo que o disjuntor deve esperar antes de passar de aberto para semiaberto.
                 .permittedNumberOfCallsInHalfOpenState(1) //NúmeroPermitidoDeChamadasEmEstadoMeioAberto
                 .minimumNumberOfCalls(5) // Configures the minimum number of calls which are required (per sliding window period) before the CircuitBreaker can calculate the error rate or slow call rate.
-                //.recordExceptions(SQLException.class)
+                .recordExceptions(NullPointerException.class)
                 .build();
 
         return circuitBreakerRegistry.circuitBreaker("orchestratorCircuit",circuitBreakerConfig);
